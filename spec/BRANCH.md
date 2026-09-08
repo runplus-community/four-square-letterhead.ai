@@ -1,5 +1,5 @@
-# spec-v1.2
+# spec-v1.3
 
-Owns the FSL v1.2 constitutional identity: normative vocabulary, laws/contracts/policies/guardrails, conformance states, exception/waiver semantics, Four-Square branch grammar, page-depth rules, evidence and release meaning.
+Owns the FSL v1.3 constitutional identity and traceability law: stable clause IDs, framework/project version separation, scoped proof, exact four-commit release snapshots, REUSE/INHERIT/REFERENCE semantics, AI ambiguity boundaries, and the existing v1.2 normative vocabulary.
 
-This branch continues directly from `spec-v1.1` and remains deliberately separate from templates, skill instructions, and recall material.
+This branch continues directly from `spec-v1.2`. FSL remains 1-3 pages; detailed evidence belongs in supporting artifacts rather than new constitutional categories.
