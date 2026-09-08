@@ -1,0 +1,24 @@
+name: Validate FSL v1.4 memory
+
+on:
+  push:
+    branches: [memory-v1.4]
+  workflow_dispatch:
+
+jobs:
+  validate-memory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: memory-v1.4
+      - name: Validate v1.4 recall model
+        run: |
+          set -euo pipefail
+          test -f memory/FSL-v1.4-MEMORY.md
+          grep -q 'Canonical version: v1.4' memory/FSL-v1.4-MEMORY.md
+          grep -q 'PARALLEL E2E' memory/FSL-v1.4-MEMORY.md
+          grep -q 'TOUCHPOINT SET' memory/FSL-v1.4-MEMORY.md
+          grep -q 'TECHNOLOGY / LIBRARY / REFERENCE / LINK' memory/FSL-v1.4-MEMORY.md
+          grep -q 'MEMORY may remember law; MEMORY cannot make law' memory/FSL-v1.4-MEMORY.md
+          grep -q 'TOUCH EVERYTHING REQUIRED' memory/FSL-v1.4-MEMORY.md
