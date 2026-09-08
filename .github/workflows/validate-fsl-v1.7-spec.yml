@@ -1,0 +1,39 @@
+name: Validate FSL v1.7 spec
+on:
+  push:
+    branches: [spec-v1.7]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-spec:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Verify method, clause identity and preserved history
+        run: |
+          set -euo pipefail
+          git diff --exit-code 3d20408cd51ce707757f62725c73f96a49206228 -- spec/FSL-v1.6-CONSTITUTION.md spec/FSL-v1.6-LIFECYCLE.md
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          root=Path('spec')
+          s=(root/'FSL-v1.7-CONSTITUTION.md').read_text()
+          old=(root/'FSL-v1.6-CONSTITUTION.md').read_text()
+          pattern=r'^\*\*([A-Z]+-[A-Z]+-\d{3})'
+          ids=re.findall(pattern,s,re.M)
+          assert len(ids)==len(set(ids))
+          assert set(re.findall(pattern,old,re.M)) <= set(ids)
+          for token in ('[ SPEC | SYSTEM | AI | MEMORY ]','LAW-SPEC-001','LAW-OWN-001','LAW-REPO-001','LAW-ADOPT-001','LAW-ADOPT-002','LAW-ROUTE-002','LAW-RUN-001','LAW-LIFE-006','Future iterations are optional','before execution','same workflow','OBSERVED / AS-IS','ADOPTED / INTENDED','LAW-DEV-001 through LAW-DEV-004 are retired'):
+              assert token in s,token
+          for n in ('ROUTES','ADOPTION','LIFECYCLE','CHANGELOG'):
+              p=root/f'FSL-v1.7-{n}.md'
+              assert p.is_file() and p.stat().st_size>100
+          r=(root/'FSL-v1.7-ROUTES.md').read_text()
+          assert r.count('| NOT RUN |')==4
+          assert '| PASS |' not in r
+          print('PASS: v1.7 method structure, reserved IDs, blank run sheet and unchanged v1.6 source')
+          PY
