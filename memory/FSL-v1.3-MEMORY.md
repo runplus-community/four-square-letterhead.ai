@@ -1,9 +1,9 @@
 # FSL Memory - v1.3
 
-**FSL = Four-Square Letterhead. Canonical version: v1.3.**
+**FSL = Four-Square Letterhead. Canonical development version: v1.3.**
 
 ## File-backed recall
-When FSL is recalled, retrieve/use the actual v1.3 files first, not theory alone. Canonical set includes 1P/2P/3P DOCX+PDF templates, Django v1.3 sample, Constitution, Skill, Checklist, Traceability Guide, Snapshot example, Manifest, README and checksums.
+When FSL is recalled, retrieve/use the actual v1.3 files first, not theory alone. Canonical set includes 1P/2P/3P DOCX+PDF templates, Django v1.3 sample, Constitution, Skill, Checklist, Development Strategy, Iterations CSV, Traceability Guide, Snapshot example, Manifest, README and checksums.
 
 ## Fixed model
 SPEC and MEMORY are fixed. Two middle lanes are project-defined and version-stable unless a reviewed migration changes them. `main1` is immutable first-commit root; `main` is accepted integration.
@@ -17,6 +17,32 @@ Accepted Four-Square releases record the exact four reviewed commits in a lightw
 
 ## Version identity
 `Four-Square Template v1.3` identifies the FSL governance language. Project/contract/sample version identifies the governed system. They are separate and MUST NOT be conflated.
+
+## Iteration development
+FSL develops through **small ordered end-to-end iterations**.
+
+Every iteration closes one useful requirement from rule to implementation to usable state to checker to evidence. `Implemented` alone is not complete.
+
+Canonical short axiom:
+
+**ITERATE -> TOUCH -> PROVE -> LEARN -> INCREMENT**
+
+Use one short sequence CSV:
+
+`Seq,Iteration,Requirement,Touchpoints,E2E Path,Proof,Status`
+
+Statuses: `PLANNED | ACTIVE | PROVEN | BLOCKED`.
+
+Each next iteration grows from the latest PROVEN baseline and should preserve previously proven behavior unless explicitly changed.
+
+## Touchpoints
+Touchpoints are system surfaces, not branches. Typical vocabulary:
+
+`SPEC | Template | Foundation | Materialization | Runtime | Manager | Access | Checker | AI | Memory | Evidence | Package`
+
+Relevant touchpoints are classified `CHANGE | VERIFY | NOT AFFECTED`.
+
+**Branches say who owns responsibility. Touchpoints say where an iteration crosses the system.**
 
 ## Reuse semantics
 REUSE = use proven capability without automatically importing source law. INHERIT = explicitly adopt a requirement/contract. REFERENCE = use knowledge/evidence without adopting its authority.
