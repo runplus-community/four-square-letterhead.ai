@@ -1,0 +1,20 @@
+fsl: "1.4"
+project: "four-square-letterhead.ai"
+project_version: "1.4"
+branches:
+  spec:
+    branch: "spec-v1.4"
+    commit: "b87eccccf020baf671b636bc407f7f6f5254e7b8"
+  lane_a:
+    branch: "templates-v1.4"
+    commit: "342155999e421e911de69e403e3521632846dd8c"
+  lane_b:
+    branch: "skill-v1.4"
+    commit: "53f6546fef8accc6d1d8b5f4e7f84b0e298b09b4"
+  memory:
+    branch: "memory-v1.4"
+    commit: "8f9e4bf0d519e723649cfe8ecd5c54ab9be701d3"
+authority: "git"
+integration:
+  branch: "main"
+  commit: "0f1eb20f3ffde73f560e82ec90f35eff28d8ca41"
