@@ -20,8 +20,7 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           s=Path('skills/FSL-v1.7-SKILL.md').read_text()
-          for token in ('SPEC / SYSTEM / AI / MEMORY','Historical and future iteration plans are optional','Before every route run, show all declared touchpoints','NOT RUN','same','R-01','Four-Square Template v1.7','FSL owns the method. The project owns the work.','A proposal is not adopted by being committed','MEMORY may remember law; MEMORY cannot make law.'):
-              if token=='same': continue
+          for token in ('SPEC / SYSTEM / AI / MEMORY','Historical and future iteration plans are optional','Before every route run, show all declared touchpoints','NOT RUN','Require connected workflow evidence','R-01','Four-Square Template v1.7','FSL owns the method. The project owns the work.','A proposal is not adopted by being committed','MEMORY may remember law; MEMORY cannot make law.'):
               assert token in s,token
           c=Path('skills/FSL-v1.7-CHECKLIST.md').read_text()
           assert c.count('- [ ]')==4
