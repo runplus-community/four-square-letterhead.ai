@@ -1,0 +1,91 @@
+name: Build FSL v1.4 branch release
+
+on:
+  push:
+    branches: [release/fsl-v1.4]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  assemble-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release/fsl-v1.4
+      - name: Install verification tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils zip
+          python -m pip install --disable-pip-version-check python-docx
+      - name: Assemble v1.4
+        run: |
+          set -euo pipefail
+          rm -rf release/v1.4
+          mkdir -p release/v1.4
+          cp spec/FSL-v1.4-CONSTITUTION.md release/v1.4/
+          cp spec/FSL-v1.4-DEVELOPMENT-STRATEGIES.md release/v1.4/
+          cp spec/FSL-v1.4-IMPLEMENTATION-REFERENCES.md release/v1.4/
+          cp spec/FSL-v1.4-MANIFEST.yaml release/v1.4/
+          cp skills/FSL-v1.4-SKILL.md release/v1.4/
+          cp skills/FSL-v1.4-CHECKLIST.md release/v1.4/
+          cp memory/FSL-v1.4-MEMORY.md release/v1.4/
+          cp templates/v1.4/FSL-v1.4-Template-*.docx release/v1.4/
+          cp templates/v1.4/FSL-v1.4-Template-*.pdf release/v1.4/
+          cp templates/v1.4/FSL-v1.4-Sample-Django-2P.docx release/v1.4/
+          cp templates/v1.4/FSL-v1.4-Sample-Django-2P.pdf release/v1.4/
+          cp RELEASES/FSL-v1.4.md release/v1.4/RELEASE-NOTES-FSL-v1.4.md
+          cp VERSION release/v1.4/VERSION
+          cp RELEASES/FSL-v1.4-SNAPSHOT.yaml release/v1.4/FSL-v1.4-SNAPSHOT.yaml
+          cat >> release/v1.4/FSL-v1.4-SNAPSHOT.yaml <<'EOF'
+          integration:
+            branch: "main"
+            commit: "0f1eb20f3ffde73f560e82ec90f35eff28d8ca41"
+          EOF
+      - name: Verify release contract
+        run: |
+          set -euo pipefail
+          test "$(pdfinfo release/v1.4/FSL-v1.4-Template-1P.pdf | awk '/^Pages:/ {print $2}')" = 1
+          test "$(pdfinfo release/v1.4/FSL-v1.4-Template-2P.pdf | awk '/^Pages:/ {print $2}')" = 2
+          test "$(pdfinfo release/v1.4/FSL-v1.4-Template-3P.pdf | awk '/^Pages:/ {print $2}')" = 3
+          test "$(pdfinfo release/v1.4/FSL-v1.4-Sample-Django-2P.pdf | awk '/^Pages:/ {print $2}')" = 2
+          grep -q 'LAW-DEV-001' release/v1.4/FSL-v1.4-CONSTITUTION.md
+          grep -q 'LAW-REF-001' release/v1.4/FSL-v1.4-CONSTITUTION.md
+          grep -q 'PARALLEL E2E' release/v1.4/FSL-v1.4-DEVELOPMENT-STRATEGIES.md
+          grep -q 'TECHNOLOGY' release/v1.4/FSL-v1.4-IMPLEMENTATION-REFERENCES.md
+          grep -q 'TOUCH EVERYTHING REQUIRED' release/v1.4/FSL-v1.4-MEMORY.md
+          grep -q '0f1eb20f3ffde73f560e82ec90f35eff28d8ca41' release/v1.4/FSL-v1.4-SNAPSHOT.yaml
+      - name: Build pack
+        run: |
+          set -euo pipefail
+          cd release/v1.4
+          find . -maxdepth 1 -type f ! -name 'FSL-Pack-v1.4.zip' ! -name 'FSL-Pack-v1.4.zip.sha256' ! -name 'SHA256SUMS.txt' -printf '%f\n' | sort | xargs sha256sum > SHA256SUMS.txt
+          zip -q -9 FSL-Pack-v1.4.zip $(find . -maxdepth 1 -type f ! -name 'FSL-Pack-v1.4.zip' ! -name 'FSL-Pack-v1.4.zip.sha256' -printf '%f\n' | sort)
+          sha256sum FSL-Pack-v1.4.zip > FSL-Pack-v1.4.zip.sha256
+          sha256sum -c FSL-Pack-v1.4.zip.sha256
+      - name: Write index
+        run: |
+          cat > release/v1.4/ARTIFACTS.md <<'EOF'
+          # FSL v1.4 branch release artifacts
+
+          Canonical branch-scoped FSL v1.4 release snapshot.
+
+          Includes actual 1P/2P/3P DOCX+PDF templates, Django 2P sample, Constitution, Development Strategies, Implementation References, Manifest, Skill, Checklist, Memory, exact Four-Square snapshot, release notes, VERSION, checksums and ZIP pack.
+
+          Development axiom: TOUCH EVERYTHING REQUIRED; COMPLETE LITTLE; GROW WHAT IS PROVEN.
+
+          Git remains authoritative. This repository is public, so this branch is publicly readable.
+          EOF
+      - name: Commit verified branch release
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add release/v1.4
+          if git diff --cached --quiet; then
+            echo 'No generated release changes.'
+          else
+            git commit -m 'release: build verified FSL v1.4 branch artifacts [skip ci]'
+            git push origin HEAD:release/fsl-v1.4
+          fi
