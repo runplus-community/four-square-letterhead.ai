@@ -1,10 +1,21 @@
 # Four-Square Letterhead (FSL)
 
-Reusable, file-backed project/release identity documents for humans and AI.
+**Current integrated version: FSL v1.2**  
+**Template identity: Four-Square Template v1.2**
 
-## Four-Square root
+FSL is a compact, file-backed **project constitution + contract + technical letterhead** for humans and AI.
 
-`main1` means this repository's **first commit / immutable root reference**.
+## Constitutional center
+FSL distinguishes binding law from strong guidance and permission:
+
+- **MUST / MUST NOT** — binding requirement / prohibition.
+- **SHOULD / SHOULD NOT** — strong expectation; deviations should be visible and reasoned.
+- **MAY** — permitted option.
+- **EXCEPTION / WAIVER** — explicit scoped departure from binding law.
+
+A binding requirement **MUST NOT** be silently weakened or bypassed. Missing evidence is **NOT YET PROVEN**, not assumed success.
+
+## Four-Square model
 
 ```text
 main1
@@ -12,12 +23,23 @@ main1
 [ spec-vN | <project-lane-a>-vN | <project-lane-b>-vN | memory-vN ]
 ```
 
-`SPEC` and `MEMORY` are fixed concerns. The two middle lanes are project-selected and remain stable across versions.
+`SPEC` and `MEMORY` are fixed. The two middle lanes are project-defined and should remain stable across versions. `main1` is the repository first commit / immutable root reference. `main` is accepted integration.
 
-For FSL v1.1 itself:
+For FSL itself:
 
 ```text
-spec-v1.1 | templates-v1.1 | skill-v1.1 | memory-v1.1
+spec-v1.2 | templates-v1.2 | skill-v1.2 | memory-v1.2
 ```
 
-`main` is accepted integration.
+## v1.2 contents
+- constitutional SPEC and manifest
+- 1P / 2P / 3P DOCX + PDF templates
+- Django v1.2 illustrative sample
+- FSL v1.2 skill
+- recommended development checklist
+- file-backed memory definition
+- rendered normative emphasis: CAPITAL + bold + underline
+- conformance states: CONFORMANT / CONFORMANT WITH EXCEPTION / NON-CONFORMANT / NOT YET PROVEN
+
+## Release rule
+**One version, four squares, all green.**
