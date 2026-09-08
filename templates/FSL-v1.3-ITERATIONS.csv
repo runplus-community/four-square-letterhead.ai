@@ -1,2 +1,2 @@
 Seq,Iteration,Requirement,Touchpoints,E2E Path,Proof,Status
-1,I01,<small requirement>,<touchpoint|touchpoint>,<start>><...>><proof>,<observable proof>,PLANNED
+1,I01,<small requirement>,"<touchpoint>:CHANGE|<touchpoint>:VERIFY","<start>><step>><check>><evidence>","<observable proof>",PLANNED
