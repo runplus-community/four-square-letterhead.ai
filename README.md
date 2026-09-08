@@ -1,19 +1,12 @@
 # Four-Square Letterhead (FSL)
 
-**Current integrated version: FSL v1.2**  
-**Template identity: Four-Square Template v1.2**
+**Current integrated version: FSL v1.3**  
+**Template identity: Four-Square Template v1.3**
 
-FSL is a compact, file-backed **project constitution + contract + technical letterhead** for humans and AI.
+FSL is a compact, file-backed project constitution / contract / technical letterhead for humans and AI. It remains deliberately small: **1–3 pages maximum**.
 
-## Constitutional center
-FSL distinguishes binding law from strong guidance and permission:
-
-- **MUST / MUST NOT** — binding requirement / prohibition.
-- **SHOULD / SHOULD NOT** — strong expectation; deviations should be visible and reasoned.
-- **MAY** — permitted option.
-- **EXCEPTION / WAIVER** — explicit scoped departure from binding law.
-
-A binding requirement **MUST NOT** be silently weakened or bypassed. Missing evidence is **NOT YET PROVEN**, not assumed success.
+## Constitutional language
+FSL preserves the v1.2 vocabulary: **MUST / MUST NOT**, **SHOULD / SHOULD NOT**, **MAY**, **EXCEPTION / WAIVER**. Binding law MUST NOT be silently weakened, and missing proof is **NOT YET PROVEN**.
 
 ## Four-Square model
 
@@ -23,23 +16,22 @@ main1
 [ spec-vN | <project-lane-a>-vN | <project-lane-b>-vN | memory-vN ]
 ```
 
-`SPEC` and `MEMORY` are fixed. The two middle lanes are project-defined and should remain stable across versions. `main1` is the repository first commit / immutable root reference. `main` is accepted integration.
+`SPEC` and `MEMORY` are fixed. The two middle lanes are project-defined and SHOULD remain stable across versions. `main1` is the immutable first-commit root; `main` is accepted integration.
 
-For FSL itself:
+For FSL v1.3 itself:
 
 ```text
-spec-v1.2 | templates-v1.2 | skill-v1.2 | memory-v1.2
+spec-v1.3 | templates-v1.3 | skill-v1.3 | memory-v1.3
 ```
 
-## v1.2 contents
-- constitutional SPEC and manifest
-- 1P / 2P / 3P DOCX + PDF templates
-- Django v1.2 illustrative sample
-- FSL v1.2 skill
-- recommended development checklist
-- file-backed memory definition
-- rendered normative emphasis: CAPITAL + bold + underline
-- conformance states: CONFORMANT / CONFORMANT WITH EXCEPTION / NON-CONFORMANT / NOT YET PROVEN
+## v1.3 traceability
+- Material binding clauses MUST carry stable IDs such as `LAW-SPEC-001`.
+- Proof records use `CLAIM / SCOPE / ENVIRONMENT / EVIDENCE / RESULT`.
+- Accepted Four-Square releases MUST record the exact four reviewed lane commits; Git remains authority.
+- `Four-Square Template v1.3` identifies the governance language; project version identifies the governed system. They MUST NOT be conflated.
+- REUSE, INHERIT and REFERENCE distinguish capability reuse from adopted law and evidence-only reference.
+- **MEMORY may remember law; MEMORY cannot make law.**
+- Agents MUST NOT silently strengthen or weaken ambiguous normative intent.
 
 ## Release rule
 **One version, four squares, all green.**

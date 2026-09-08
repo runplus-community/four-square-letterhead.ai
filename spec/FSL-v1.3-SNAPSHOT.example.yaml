@@ -1,0 +1,17 @@
+fsl: "1.3"
+project: "example-project"
+project_version: "1.0"
+branches:
+  spec:
+    branch: "spec-v1.0"
+    commit: "<commit-sha>"
+  lane_a:
+    branch: "code-v1.0"
+    commit: "<commit-sha>"
+  lane_b:
+    branch: "ai-v1.0"
+    commit: "<commit-sha>"
+  memory:
+    branch: "memory-v1.0"
+    commit: "<commit-sha>"
+authority: "git"
