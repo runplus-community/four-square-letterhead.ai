@@ -1,0 +1,25 @@
+name: Validate FSL v1.5 skill
+
+on:
+  push:
+    branches: [skill-v1.5]
+  workflow_dispatch:
+
+jobs:
+  validate-skill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: skill-v1.5
+      - name: Validate generation method
+        run: |
+          set -euo pipefail
+          test -f skills/FSL-v1.5-SKILL.md
+          test -f skills/FSL-v1.5-CHECKLIST.md
+          grep -q 'Four-Square Template v1.5' skills/FSL-v1.5-SKILL.md
+          grep -q 'FSL owns the method. The project owns the work.' skills/FSL-v1.5-SKILL.md
+          grep -q 'I-001: tiny' skills/FSL-v1.5-SKILL.md
+          grep -q 'Do not generate every later iteration' skills/FSL-v1.5-SKILL.md
+          grep -q 'ITEM | INTENT / USE | CANONICAL SOURCE' skills/FSL-v1.5-SKILL.md
+          grep -q 'No per-iteration checklist or YAML tracker is required' skills/FSL-v1.5-CHECKLIST.md
