@@ -1,1 +1,0 @@
-Binary template artifacts are published in this lane and in the v1.1 release pack.
