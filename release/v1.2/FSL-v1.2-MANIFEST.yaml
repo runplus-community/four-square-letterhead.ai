@@ -1,0 +1,29 @@
+fsl:
+  name: Four-Square Letterhead
+  alias: FSL
+  version: "1.2"
+  template_label: "Four-Square Template v1.2"
+  character: "constitutional project letterhead / contract"
+  max_pages: 3
+  fixed_lanes: [spec, memory]
+  project_lanes:
+    count: 2
+    examples: [code, tools, docs, utils, plugins, skills, ai, app, data, model]
+  branch_grammar: "main1 -> [spec-vN | <lane-a>-vN | <lane-b>-vN | memory-vN]"
+  normative:
+    binding: [MUST, MUST_NOT, SHALL, SHALL_NOT]
+    expected: [SHOULD, SHOULD_NOT]
+    permitted: [MAY]
+    deviation: [EXCEPTION, WAIVER]
+    rendered_emphasis: [uppercase, bold, underline]
+  constitutional_forms: [ARTICLE, LAW, CONTRACT, POLICY, GUARDRAIL, RECOMMENDED_PRACTICE, CHECKLIST]
+  conformance_states: [CONFORMANT, CONFORMANT_WITH_EXCEPTION, NON_CONFORMANT, NOT_YET_PROVEN]
+  development:
+    checklist_driven: recommended
+    agents: permitted_with_defined_responsibility
+    agents_may_waive_binding_law: false
+  recall_default: "v1.2 file-backed pack"
+  sample:
+    name: Django
+    version_label: "Django Sample v1.2"
+    illustrative_only: true
