@@ -1,0 +1,29 @@
+name: Validate FSL v1.7 skill
+on:
+  push:
+    branches: [skill-v1.7]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-skill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Check guidance and preserved v1.6 instructions
+        run: |
+          set -euo pipefail
+          git diff --exit-code bd87bb25790fb9f97ca50894353aa8bbd549a70f -- skills/FSL-v1.6-SKILL.md skills/FSL-v1.6-CHECKLIST.md
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('skills/FSL-v1.7-SKILL.md').read_text()
+          for token in ('SPEC / SYSTEM / AI / MEMORY','Historical and future iteration plans are optional','Before every route run, show all declared touchpoints','NOT RUN','Require connected workflow evidence','R-01','Four-Square Template v1.7','FSL owns the method. The project owns the work.','A proposal is not adopted by being committed','MEMORY may remember law; MEMORY cannot make law.'):
+              assert token in s,token
+          c=Path('skills/FSL-v1.7-CHECKLIST.md').read_text()
+          assert c.count('- [ ]')==4
+          assert 'four reviewed commits' in c
+          print('PASS: skill, route evidence guidance and four-item checklist')
+          PY

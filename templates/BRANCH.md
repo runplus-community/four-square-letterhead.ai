@@ -1,7 +1,3 @@
-# templates-v1.6
+# templates-v1.7
 
-Owns the generated FSL v1.6 DOCX/PDF templates and illustrative sample.
-
-v1.6 preserves the v1.5 1–3 page layout, version separation, initial development sequence, compact references and ownership footer. It adds one visible lifecycle line on Page 1 and post-release lifecycle guidance on the 3-page release/evidence view.
-
-This lane continues directly from `templates-v1.5`.
+Continues templates-v1.6. Owns standalone v1.7 DOCX generation, rendered PDFs and artifact verification. Default project squares are SPEC / SYSTEM / AI / MEMORY; FSL is first under SPEC. R-01 routes and unreached touchpoints are visible; existing-project iterations are optional. The Django illustration retains CODE / DOCS and makes no runtime claim. Previous version files remain unchanged.
