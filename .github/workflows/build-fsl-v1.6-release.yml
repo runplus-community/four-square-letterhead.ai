@@ -1,0 +1,174 @@
+name: Build FSL v1.6 branch release
+
+on:
+  push:
+    branches: [release/fsl-v1.6]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  assemble-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release/fsl-v1.6
+
+      - name: Install verification tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils zip
+          python -m pip install --disable-pip-version-check python-docx==1.2.0
+
+      - name: Assemble v1.6 release
+        run: |
+          set -euo pipefail
+          rm -rf release/v1.6
+          mkdir -p release/v1.6/source
+
+          cp spec/FSL-v1.6-CONSTITUTION.md release/v1.6/
+          cp spec/FSL-v1.6-LIFECYCLE.md release/v1.6/
+          cp skills/FSL-v1.6-SKILL.md release/v1.6/
+          cp skills/FSL-v1.6-CHECKLIST.md release/v1.6/
+          cp memory/FSL-v1.6-MEMORY.md release/v1.6/
+          cp templates/v1.6/FSL-v1.6-Template-1P.docx release/v1.6/
+          cp templates/v1.6/FSL-v1.6-Template-1P.pdf release/v1.6/
+          cp templates/v1.6/FSL-v1.6-Template-2P.docx release/v1.6/
+          cp templates/v1.6/FSL-v1.6-Template-2P.pdf release/v1.6/
+          cp templates/v1.6/FSL-v1.6-Template-3P.docx release/v1.6/
+          cp templates/v1.6/FSL-v1.6-Template-3P.pdf release/v1.6/
+          cp templates/v1.6/FSL-v1.6-Sample-Django-2P.docx release/v1.6/
+          cp templates/v1.6/FSL-v1.6-Sample-Django-2P.pdf release/v1.6/
+          cp templates/v1.6/build_templates.py release/v1.6/source/
+          printf 'python-docx==1.2.0\n' > release/v1.6/source/requirements.txt
+          cp README.md release/v1.6/README.md
+          cp RELEASES/FSL-v1.6.md release/v1.6/FSL-v1.6-CHANGELOG.md
+          cp RELEASES/FSL-v1.6-SNAPSHOT.md release/v1.6/FSL-v1.6-SNAPSHOT.md
+          printf '\nIntegration: `d3e5e845a6356fdd961843371969ba0cd2238349`\n' >> release/v1.6/FSL-v1.6-SNAPSHOT.md
+          cp VERSION release/v1.6/VERSION
+
+          cat > release/v1.6/FSL-v1.6-VALIDATION.md <<'EOF'
+          # FSL v1.6 — Release validation
+
+          This branch release was assembled from the reviewed FSL v1.6 Four-Square integration.
+
+          Verified by GitHub Actions:
+          - exact PDF page counts: 1 / 2 / 3 / 2
+          - visible `Four-Square Template v1.6`
+          - ownership footer on every generated document
+          - initial `I-001` development sequence retained
+          - lifecycle line present on every generated document
+          - post-release lifecycle detail present in the 3-page template
+          - exact reviewed four-commit snapshot present
+          - APPENDIX / ERRATA / AMENDMENT lifecycle identities and immutability law present
+
+          Publication scope: public branch-scoped release in this repository. Git remains authoritative.
+          EOF
+
+          cat > release/v1.6/source/README.md <<'EOF'
+          # Build source
+
+          This v1.6 generator derives from the verified v1.5 generator already present in the repository.
+
+          ```sh
+          python -m pip install -r source/requirements.txt
+          python source/build_templates.py --output .
+          ```
+
+          Render PDFs with LibreOffice and verify page counts, lifecycle wording and footer before publishing. FSL does not require YAML lifecycle tracking.
+          EOF
+
+      - name: Verify release contract
+        run: |
+          set -euo pipefail
+          test "$(pdfinfo release/v1.6/FSL-v1.6-Template-1P.pdf | awk '/^Pages:/ {print $2}')" = 1
+          test "$(pdfinfo release/v1.6/FSL-v1.6-Template-2P.pdf | awk '/^Pages:/ {print $2}')" = 2
+          test "$(pdfinfo release/v1.6/FSL-v1.6-Template-3P.pdf | awk '/^Pages:/ {print $2}')" = 3
+          test "$(pdfinfo release/v1.6/FSL-v1.6-Sample-Django-2P.pdf | awk '/^Pages:/ {print $2}')" = 2
+          grep -q 'FSL owns the method. The project owns the work.' release/v1.6/FSL-v1.6-CONSTITUTION.md
+          grep -q 'Draft -> Prove -> Release -> Appendix / Errata / Amendment -> Next Release' release/v1.6/FSL-v1.6-CONSTITUTION.md
+          grep -q 'LAW-LIFE-001' release/v1.6/FSL-v1.6-CONSTITUTION.md
+          grep -q 'LAW-LIFE-003' release/v1.6/FSL-v1.6-CONSTITUTION.md
+          grep -q 'LAW-LIFE-004' release/v1.6/FSL-v1.6-CONSTITUTION.md
+          grep -q 'Release is immutable. Clarify with appendix, correct with errata, change with amendment.' release/v1.6/FSL-v1.6-CONSTITUTION.md
+          grep -q '3d20408cd51ce707757f62725c73f96a49206228' release/v1.6/FSL-v1.6-SNAPSHOT.md
+          grep -q 'c85fb3dd22fdb4be21e039c3b22638b685d899b3' release/v1.6/FSL-v1.6-SNAPSHOT.md
+          grep -q 'bd87bb25790fb9f97ca50894353aa8bbd549a70f' release/v1.6/FSL-v1.6-SNAPSHOT.md
+          grep -q '6cecbed1fee02a5b3c59dec2cedd6cc37de726e9' release/v1.6/FSL-v1.6-SNAPSHOT.md
+          grep -q 'd3e5e845a6356fdd961843371969ba0cd2238349' release/v1.6/FSL-v1.6-SNAPSHOT.md
+          python - <<'PY'
+          from pathlib import Path
+          from docx import Document
+          root=Path('release/v1.6')
+          docs=sorted(root.glob('FSL-v1.6-*.docx'))
+          assert len(docs)==4, docs
+          for p in docs:
+              d=Document(p)
+              text=[]; emphasized=0
+              for s in d.sections:
+                  for para in list(s.header.paragraphs)+list(s.footer.paragraphs):
+                      text.append(para.text)
+                      for r in para.runs:
+                          if r.bold and r.underline and any(k in r.text for k in ('MUST','SHOULD','MAY','CONFORMANT','EXCEPTION')):
+                              emphasized += 1
+              for para in d.paragraphs:
+                  text.append(para.text)
+                  for r in para.runs:
+                      if r.bold and r.underline and any(k in r.text for k in ('MUST','SHOULD','MAY','CONFORMANT','EXCEPTION')):
+                          emphasized += 1
+              for tbl in d.tables:
+                  for row in tbl.rows:
+                      for cell in row.cells:
+                          text.append(cell.text)
+                          for para in cell.paragraphs:
+                              for r in para.runs:
+                                  if r.bold and r.underline and any(k in r.text for k in ('MUST','SHOULD','MAY','CONFORMANT','EXCEPTION')):
+                                      emphasized += 1
+              joined='\n'.join(text)
+              assert 'Four-Square Template v1.6' in joined, p
+              assert 'FSL owns the method. The project owns the work.' in joined, p
+              assert 'Draft → Prove → Release → Appendix / Errata / Amendment → Next Release.' in joined, p
+              assert 'I-001:' in joined, p
+              assert emphasized >= 5, (p, emphasized)
+              if 'Template-3P' in p.name:
+                  assert 'POST-RELEASE LIFECYCLE' in joined, p
+                  assert 'APPENDIX-A / ERRATA-001 / AMENDMENT-001' in joined, p
+              if 'Django' in p.name:
+                  assert 'Sample edition v1.6' in joined, p
+                  assert 'LAW-DJANGO-001' in joined, p
+          print('FSL v1.6 branch release validation passed')
+          PY
+
+      - name: Build manifest, checksums and ZIP
+        run: |
+          set -euo pipefail
+          cd release/v1.6
+          find . -type f ! -name 'MANIFEST.txt' ! -name 'SHA256SUMS.txt' ! -name 'FSL-Pack-v1.6.zip' ! -name 'FSL-Pack-v1.6.zip.sha256' -printf '%P\n' | sort > MANIFEST.txt
+          while IFS= read -r f; do sha256sum "$f"; done < MANIFEST.txt > SHA256SUMS.txt
+          zip -q -9 -r FSL-Pack-v1.6.zip . -x 'FSL-Pack-v1.6.zip' 'FSL-Pack-v1.6.zip.sha256'
+          sha256sum FSL-Pack-v1.6.zip > FSL-Pack-v1.6.zip.sha256
+          sha256sum -c FSL-Pack-v1.6.zip.sha256
+
+      - name: Write branch release index
+        run: |
+          cat > release/v1.6/ARTIFACTS.md <<'EOF'
+          # FSL v1.6 branch release artifacts
+
+          Canonical branch-scoped FSL v1.6 package.
+
+          Includes the 1P/2P/3P templates, Django 2P sample, Constitution, Lifecycle, Skill, Checklist, Memory, release notes, exact Four-Square snapshot, build source, validation report, manifest, checksums and complete ZIP.
+
+          **FSL owns the method. The project owns the work.**
+
+          **Release is immutable. Clarify with appendix, correct with errata, change with amendment.**
+          EOF
+
+      - name: Commit verified branch release
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add release/v1.6
+          git commit -m 'release: build verified FSL v1.6 branch artifacts [skip ci]'
+          git push origin HEAD:release/fsl-v1.6
