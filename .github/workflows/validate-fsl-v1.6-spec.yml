@@ -1,0 +1,30 @@
+name: Validate FSL v1.6 spec
+
+on:
+  push:
+    branches: [spec-v1.6]
+  workflow_dispatch:
+
+jobs:
+  validate-spec:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: spec-v1.6
+      - name: Validate lifecycle constitution
+        run: |
+          set -euo pipefail
+          test -f spec/FSL-v1.6-CONSTITUTION.md
+          test -f spec/FSL-v1.6-LIFECYCLE.md
+          grep -q 'FSL owns the method. The project owns the work.' spec/FSL-v1.6-CONSTITUTION.md
+          grep -q 'Draft -> Prove -> Release -> Appendix / Errata / Amendment -> Next Release' spec/FSL-v1.6-CONSTITUTION.md
+          grep -q 'LAW-LIFE-001' spec/FSL-v1.6-CONSTITUTION.md
+          grep -q 'LAW-LIFE-003' spec/FSL-v1.6-CONSTITUTION.md
+          grep -q 'LAW-LIFE-004' spec/FSL-v1.6-CONSTITUTION.md
+          grep -q 'APPENDIX-A' spec/FSL-v1.6-CONSTITUTION.md
+          grep -q 'ERRATA-001' spec/FSL-v1.6-CONSTITUTION.md
+          grep -q 'AMENDMENT-001' spec/FSL-v1.6-CONSTITUTION.md
+          grep -q 'Release is immutable. Clarify with appendix, correct with errata, change with amendment.' spec/FSL-v1.6-CONSTITUTION.md
+          grep -q 'SPEC and MEMORY MUST remain fixed lanes' spec/FSL-v1.6-CONSTITUTION.md
+          grep -q 'no full future-iteration plan, YAML schema or iteration ledger is required' spec/FSL-v1.6-CONSTITUTION.md
