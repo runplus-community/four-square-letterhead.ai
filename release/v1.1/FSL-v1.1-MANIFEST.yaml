@@ -1,0 +1,16 @@
+fsl:
+  name: Four-Square Letterhead
+  alias: FSL
+  version: "1.1"
+  template_label: "Four-Square Template v1.1"
+  max_pages: 3
+  fixed_lanes: [spec, memory]
+  project_lanes:
+    count: 2
+    examples: [code, tools, docs, utils, plugins, skills, ai]
+  branch_grammar: "main1 -> [spec-vN | <lane-a>-vN | <lane-b>-vN | memory-vN]"
+  recall_default: "v1.1 file-backed pack"
+  sample:
+    name: Django
+    version_label: "Django Sample v1.1"
+    illustrative_only: true
