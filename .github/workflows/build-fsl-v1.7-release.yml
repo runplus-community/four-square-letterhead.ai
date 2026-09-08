@@ -1,0 +1,224 @@
+name: Build FSL v1.7 branch release
+on:
+  push:
+    branches: [release/fsl-v1.7]
+    paths: ['.github/workflows/build-fsl-v1.7-release.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: fsl-v1.7-release
+  cancel-in-progress: false
+env:
+  FSL_INTEGRATION: 4d44a31afd6ccf30b07abcf916f3d5aeaf130f91
+jobs:
+  assemble-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Display required route before execution
+        run: |
+          echo 'R-01: reviewed integration -> exact source/document identities -> payload assembly -> ZIP -> clean extraction -> payload verification'
+          echo 'Before run: integration/identities=NOT RUN; payload=NOT RUN; ZIP=NOT RUN; extraction=NOT RUN; verification=NOT RUN'
+          echo 'Expected: complete v1.7 document/method pack, verified after extraction; no consuming-project runtime claim'
+          test ! -e release/v1.7/FSL-Pack-v1.7.zip
+      - name: Install consumer verification tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+      - name: Verify reviewed integration and immutable artifact identities
+        id: identity
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor "$FSL_INTEGRATION" HEAD
+          test "$(cat VERSION)" = '1.7'
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          def git(*args):
+              return subprocess.check_output(['git',*args],text=True).strip()
+          lanes={
+              'spec':'4459190a485d563746c1d0721428e72898fa1f84',
+              'templates':'fcc1e6f0d17b1e06d34c587ab5a8d3c0402ae910',
+              'skills':'a1cbdd2a842e987baeafd740d45932bac1472fef',
+              'memory':'d77a5267feaa87de2df2d652f59a5465439d7e5d',
+          }
+          for folder,sha in lanes.items():
+              assert git('rev-parse',f'HEAD:{folder}')==git('rev-parse',f'{sha}:{folder}'),folder
+              assert sha in Path('RELEASES/FSL-v1.7-SNAPSHOT.md').read_text(),sha
+              print('PASS exact reviewed directory:',folder,sha)
+          old='d3e5e845a6356fdd961843371969ba0cd2238349'
+          paths=git('ls-tree','-r','--name-only',old,'--','spec','templates','skills','memory').splitlines()
+          for path in paths:
+              if path.endswith('/BRANCH.md'): continue
+              assert git('rev-parse',f'{old}:{path}')==git('rev-parse',f'HEAD:{path}'),path
+          print('PASS all preceding versioned source/artifact files preserved')
+          PY
+          (cd templates/v1.7; sha256sum -c SHA256SUMS.txt)
+          python -B templates/v1.7/verify_package.py --documents templates/v1.7
+      - name: Assemble only the declared payload
+        id: payload
+        run: |
+          set -euo pipefail
+          test ! -e release/v1.7
+          mkdir -p release/v1.7/source
+          cp spec/FSL-v1.7-*.md release/v1.7/
+          cp skills/FSL-v1.7-SKILL.md skills/FSL-v1.7-CHECKLIST.md release/v1.7/
+          cp memory/FSL-v1.7-MEMORY.md release/v1.7/
+          cp templates/v1.7/FSL-v1.7-*.docx templates/v1.7/FSL-v1.7-*.pdf release/v1.7/
+          cp templates/v1.7/build_templates.py templates/v1.7/verify_package.py templates/v1.7/requirements.txt release/v1.7/source/
+          cp README.md VERSION release/v1.7/
+          cp RELEASES/FSL-v1.7-SNAPSHOT.md release/v1.7/FSL-v1.7-SNAPSHOT.md
+          cp RELEASES/FSL-v1.7-VALIDATION.md release/v1.7/FSL-v1.7-VALIDATION.md
+          printf '\nExact integration for this assembly: `%s`.\n' "$FSL_INTEGRATION" >> release/v1.7/FSL-v1.7-SNAPSHOT.md
+          cat > release/v1.7/source/README.md <<'EOF'
+          # Standalone FSL v1.7 build and verification
+
+          Preserve the released payload. Generate a separate working copy rather than overwriting frozen artifacts:
+
+          ```sh
+          python -m pip install -r source/requirements.txt
+          python source/build_templates.py --output /tmp/fsl17-rebuild
+          libreoffice --headless --convert-to pdf --outdir /tmp/fsl17-rebuild /tmp/fsl17-rebuild/*.docx
+          python -B source/verify_package.py --documents /tmp/fsl17-rebuild
+          ```
+
+          Python 3.10+, python-docx 1.2.0, LibreOffice, Poppler CLI tools and installed Liberation Sans are used. No fonts are distributed. Rendering with a different tool version may change PDF bytes or pagination; inspect all pages and rerun verification. Byte-identical documents across unrelated environments are not promised.
+
+          For the unchanged, cleanly extracted release ZIP, run from the payload root:
+
+          ```sh
+          python -B source/verify_package.py --root .
+          ```
+
+          This verifies the manifest, all payload hashes, method anchors, exact 1/2/3/2 page counts, per-page identities/footer, default squares, FSL first in SPEC, route/adoption guidance and normative DOCX emphasis. It does not prove a downstream project's runtime.
+
+          MANIFEST.txt lists the payload except itself and SHA256SUMS.txt. SHA256SUMS.txt hashes every listed file and MANIFEST.txt. The distribution ZIP and its checksum are outside that payload; do not add them to the extracted directory before running --root. No YAML iteration or route schema is needed.
+          EOF
+          cat > release/v1.7/ARTIFACTS.md <<'EOF'
+          # FSL v1.7 artifact index
+
+          Start with FSL-v1.7-Template-1P.pdf and its editable DOCX. Use the 2P/3P forms only when essential route/adoption or lifecycle/release detail requires them. FSL-v1.7-Sample-Django-2P is an illustrative existing-system example with runtime NOT RUN.
+
+          The root includes Constitution, Routes (with blank run sheet), Adoption, Lifecycle, Skill, four-item Checklist, Memory, Changelog, Snapshot and Validation. The source folder carries the standalone generator and verifier. Manifest/checksums identify every payload file.
+
+          The branch directory also carries the distribution ZIP, its checksum and an external assembly run record. Those distribution/evidence wrappers are intentionally outside the ZIP payload so they do not hash or claim their own future publication.
+
+          FSL owns the method. The project owns the work.
+          EOF
+      - name: Hash and package the exact payload
+        id: archive
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,zipfile
+          root=Path('release/v1.7')
+          names=sorted(p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file())
+          assert not any(Path(n).suffix.lower() in ('.zip','.yml','.yaml','.ttf','.otf') for n in names)
+          (root/'MANIFEST.txt').write_text('\n'.join(names)+'\n')
+          hashes=sorted(names+['MANIFEST.txt'])
+          (root/'SHA256SUMS.txt').write_text(''.join(hashlib.sha256((root/n).read_bytes()).hexdigest()+'  '+n+'\n' for n in hashes))
+          archive=Path('/tmp/FSL-Pack-v1.7.zip')
+          with zipfile.ZipFile(archive,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+              for n in sorted(hashes+['SHA256SUMS.txt']):
+                  info=zipfile.ZipInfo(n,(2026,9,9,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED
+                  info.create_system=3;info.external_attr=0o100644 << 16
+                  z.writestr(info,(root/n).read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)
+          digest=hashlib.sha256(archive.read_bytes()).hexdigest()
+          Path('/tmp/FSL-Pack-v1.7.zip.sha256').write_text(digest+'  FSL-Pack-v1.7.zip\n')
+          print('PASS ZIP assembly:',digest,archive.stat().st_size,'bytes')
+          PY
+          python -B release/v1.7/source/verify_package.py --root release/v1.7
+      - name: Extract into a clean consumer directory
+        id: extract
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          out=Path('/tmp/fsl17-consumer')
+          assert not out.exists();out.mkdir()
+          with zipfile.ZipFile('/tmp/FSL-Pack-v1.7.zip') as z:
+              assert z.testzip() is None
+              for name in z.namelist():
+                  p=Path(name);assert not p.is_absolute() and '..' not in p.parts
+              z.extractall(out)
+          print('PASS clean extraction')
+          PY
+      - name: Verify extracted bytes and reject package tampering
+        id: consumer
+        run: |
+          set -euo pipefail
+          python -B /tmp/fsl17-consumer/source/verify_package.py --root /tmp/fsl17-consumer
+          python -B - <<'PY'
+          from pathlib import Path
+          import importlib.util,sys
+          sys.dont_write_bytecode=True
+          root=Path('/tmp/fsl17-consumer')
+          s=importlib.util.spec_from_file_location('verify',root/'source/verify_package.py')
+          v=importlib.util.module_from_spec(s);s.loader.exec_module(v)
+          p=root/'VERSION';data=p.read_bytes()
+          p.write_bytes(b'CORRUPTED\n')
+          try:
+              try: v.check_hashes(root)
+              except ValueError: print('PASS rejected modified payload bytes')
+              else: raise AssertionError('Tampered payload was accepted')
+          finally: p.write_bytes(data)
+          p=root/'UNLISTED.txt';p.write_text('not in manifest')
+          try:
+              try: v.check_hashes(root)
+              except ValueError: print('PASS rejected unlisted payload file')
+              else: raise AssertionError('Unlisted payload file was accepted')
+          finally: p.unlink()
+          v.check_hashes(root)
+          PY
+      - name: Record every required route touchpoint including unreached points
+        if: always()
+        env:
+          IDENTITY: ${{ steps.identity.outcome }}
+          PAYLOAD: ${{ steps.payload.outcome }}
+          ARCHIVE: ${{ steps.archive.outcome }}
+          EXTRACT: ${{ steps.extract.outcome }}
+          CONSUMER: ${{ steps.consumer.outcome }}
+        run: |
+          python - <<'PY'
+          import os,platform,subprocess,hashlib
+          from pathlib import Path
+          steps=[('Reviewed integration and source/document identities','IDENTITY'),('Payload assembly','PAYLOAD'),('ZIP assembly','ARCHIVE'),('Clean extraction','EXTRACT'),('Extracted payload verification and tamper rejection','CONSUMER')]
+          states={'success':'PASS','failure':'FAIL'}
+          rows=[(name,states.get(os.environ.get(key,''),'NOT RUN')) for name,key in steps]
+          success=all(state=='PASS' for _,state in rows)
+          url=f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
+          package=Path('/tmp/FSL-Pack-v1.7.zip')
+          digest=hashlib.sha256(package.read_bytes()).hexdigest() if package.exists() else 'NOT PRODUCED'
+          report=f"# FSL v1.7 - R-01 assembly run\n\nRun: {os.environ['GITHUB_RUN_ID']} / attempt {os.environ['GITHUB_RUN_ATTEMPT']}\n\nEvidence: {url}\n\nIntegration: `{os.environ['FSL_INTEGRATION']}`\n\nWorkflow revision: `{os.environ['GITHUB_SHA']}`\n\nEnvironment: {platform.platform()} / Python {platform.python_version()}\n\nExpected: complete v1.7 framework payload passing checks after clean extraction.\n\n| Required touchpoint | Result | Evidence |\n|---|---|---|\n"
+          report+=''.join(f'| {name} | {state} | Corresponding step in this run |\n' for name,state in rows)
+          report+=f"\nObserved route result: {'PASS within the declared framework artifact scope' if success else 'INCOMPLETE OR FAILED; no full route success claimed'}.\n\nZIP SHA-256: `{digest}`\n\nDocument generation is upstream provenance from template run 34289548024 and exact reviewed output commit fcc1e6f0d17b1e06d34c587ab5a8d3c0402ae910; this assembly run verifies those bytes rather than claiming it regenerated them. All required route points were shown before execution. Unreached points stay NOT RUN.\n\nDjango runtime: NOT RUN. Consuming-project conformance: NOT YET PROVEN.\n\nPublication is separate: the following push step and final Git commit establish actual branch publication. This report does not pre-claim that future action.\n"
+          Path('/tmp/FSL-v1.7-RUN.md').write_text(report)
+          print(report)
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f: f.write(report)
+          PY
+      - name: Commit verified public branch release without rewriting history
+        if: success()
+        run: |
+          set -euo pipefail
+          cp /tmp/FSL-Pack-v1.7.zip /tmp/FSL-Pack-v1.7.zip.sha256 /tmp/FSL-v1.7-RUN.md release/v1.7/
+          (cd release/v1.7; sha256sum -c FSL-Pack-v1.7.zip.sha256; sha256sum FSL-v1.7-RUN.md > FSL-v1.7-RUN.md.sha256)
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add release/v1.7
+          git commit -m 'release: verified FSL v1.7 pack and scoped route evidence [skip ci]'
+          git push origin HEAD:release/fsl-v1.7
+          echo "Published branch artifact commit: $(git rev-parse HEAD)"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: fsl-v1.7-release
+          path: |
+            release/v1.7/FSL-Pack-v1.7.zip
+            release/v1.7/FSL-Pack-v1.7.zip.sha256
+            release/v1.7/FSL-v1.7-RUN.md
+            release/v1.7/FSL-v1.7-RUN.md.sha256
+          if-no-files-found: error
