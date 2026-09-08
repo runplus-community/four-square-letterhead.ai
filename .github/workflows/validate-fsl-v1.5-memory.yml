@@ -1,0 +1,23 @@
+name: Validate FSL v1.5 memory
+
+on:
+  push:
+    branches: [memory-v1.5]
+  workflow_dispatch:
+
+jobs:
+  validate-memory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: memory-v1.5
+      - name: Validate recall contract
+        run: |
+          set -euo pipefail
+          test -f memory/FSL-v1.5-MEMORY.md
+          grep -q 'Four-Square Template v1.5' memory/FSL-v1.5-MEMORY.md
+          grep -q 'One initial line: tiny input' memory/FSL-v1.5-MEMORY.md
+          grep -q 'No YAML iteration schema' memory/FSL-v1.5-MEMORY.md
+          grep -q 'FSL owns the method. The project owns the work.' memory/FSL-v1.5-MEMORY.md
+          grep -q 'MEMORY may remember law; MEMORY cannot make law.' memory/FSL-v1.5-MEMORY.md
