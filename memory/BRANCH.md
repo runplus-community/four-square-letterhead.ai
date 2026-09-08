@@ -1,7 +1,3 @@
-# memory-v1.6
+# memory-v1.7
 
-Owns human + AI file-backed recall for FSL v1.6.
-
-v1.6 remembers the compact v1.5 method plus the post-release lifecycle: released SPEC stays frozen; APPENDIX clarifies, ERRATA corrects without changing intent, AMENDMENT changes intent, and the next release absorbs adopted changes. MEMORY remains non-normative: MEMORY may remember law; MEMORY cannot make law.
-
-This lane continues directly from `memory-v1.5`.
+Continues memory-v1.6. Owns non-normative, file-backed recall of the concrete squares, FSL-first SPEC, existing-system adoption, optional iterations, R-01 routes, visible per-run touchpoints and adopted lifecycle changes. MEMORY may remember law; MEMORY cannot make law.
