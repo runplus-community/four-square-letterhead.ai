@@ -35,7 +35,7 @@ replacements = {
     "'Each binding clause SHOULD map to a verification item and observable evidence.'":
         "'Each material binding clause MUST have a stable clause ID and SHOULD map to a verification item and observable evidence.'",
     "'Agents MUST NOT reinterpret or waive constitutional law without explicit authority.'":
-        "'When normative intent is ambiguous, agents MUST NOT silently choose a stronger or weaker interpretation; they MUST surface the ambiguity for review.'",
+        "'LAW-AI-001 — When normative intent is ambiguous, agents MUST NOT silently choose a stronger or weaker interpretation; they MUST surface the ambiguity for review.'",
     "'Proven libraries, binaries, scripts, documents, services, datasets, models, plugins and utilities SHOULD be evaluated before new core work.'":
         "'Existing assets SHOULD be classified explicitly as REUSE, INHERIT or REFERENCE when project-boundary assumptions could otherwise leak.'",
 
