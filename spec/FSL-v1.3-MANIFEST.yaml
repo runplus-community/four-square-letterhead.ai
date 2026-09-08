@@ -33,10 +33,17 @@ fsl:
   development:
     model: ordered_end_to_end_iterations
     axiom: "ITERATE -> TOUCH -> PROVE -> LEARN -> INCREMENT"
+    strategy_location: constitution_and_skill
+    separate_strategy_document: false
     spine: csv
     csv_columns: [Seq, Iteration, Requirement, Touchpoints, E2E_Path, Proof, Status]
+    csv_kept_short: true
+    kickoff_iterations: few
+    append_iterations_from_learning: true
     statuses: [PLANNED, ACTIVE, PROVEN, BLOCKED]
     touchpoint_states: [CHANGE, VERIFY, NOT_AFFECTED]
+    touchpoint_classification_required: true
+    touchpoint_classification_required_in_csv: false
     end_to_end_from_first_iteration: true
     implemented_alone_is_complete: false
     baseline: latest_proven_iteration
@@ -48,7 +55,6 @@ fsl:
     silently_resolve_normative_ambiguity: false
   recall_default: "v1.3 file-backed pack"
   supporting_artifacts:
-    development_strategy: "FSL-v1.3-DEVELOPMENT-STRATEGY.md"
     iteration_csv: "FSL-v1.3-ITERATIONS.csv"
   sample:
     name: Django
