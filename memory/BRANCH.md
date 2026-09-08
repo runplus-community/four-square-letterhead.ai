@@ -1,5 +1,5 @@
-# memory-v1.2
+# memory-v1.3
 
-Owns human + AI recall material for FSL v1.2: canonical file-backed recall behavior, constitutional vocabulary, conformance states, branch grammar, page-depth memory, checklist guidance and template-version identity.
+Owns human + AI recall material for FSL v1.3: canonical file-backed recall, clause-ID grammar, scoped proof tuple, four-commit release snapshot, version identity, REUSE/INHERIT/REFERENCE semantics, and AI ambiguity guidance.
 
-This lane continues from `memory-v1.1`. MEMORY is non-normative and MUST NOT silently create or amend binding requirements; normative changes belong in SPEC.
+This lane continues from `memory-v1.2`. MEMORY is non-normative: MEMORY may remember law; MEMORY cannot make law.
