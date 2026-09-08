@@ -1,0 +1,25 @@
+name: Validate FSL v1.4 skill
+
+on:
+  push:
+    branches: [skill-v1.4]
+  workflow_dispatch:
+
+jobs:
+  validate-skill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: skill-v1.4
+      - name: Validate v1.4 skill contract
+        run: |
+          set -euo pipefail
+          test -f skills/FSL-v1.4-SKILL.md
+          test -f skills/FSL-v1.4-CHECKLIST.md
+          grep -q 'PARALLEL E2E' skills/FSL-v1.4-SKILL.md
+          grep -q 'MEET-IN-THE-MIDDLE' skills/FSL-v1.4-SKILL.md
+          grep -q 'TOUCHPOINT SET' skills/FSL-v1.4-SKILL.md
+          grep -q 'TECHNOLOGY' skills/FSL-v1.4-SKILL.md
+          grep -q 'CLASS | ITEM | FORCE | RELATION | PURPOSE | SOURCE' skills/FSL-v1.4-SKILL.md
+          grep -q 'One version, four squares, all green' skills/FSL-v1.4-CHECKLIST.md
