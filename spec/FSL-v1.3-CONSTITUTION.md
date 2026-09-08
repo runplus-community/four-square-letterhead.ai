@@ -79,7 +79,7 @@ A minimal snapshot SHOULD contain FSL version, project, project version, four br
 
 **POLICY-DEV-003 — SHOULD.** Each iteration SHOULD begin from the latest PROVEN baseline and SHOULD preserve previously proven behavior unless the current requirement explicitly changes it.
 
-**LAW-DEV-004 — MUST.** Every iteration MUST inspect its relevant touchpoints and classify them as `CHANGE`, `VERIFY`, or `NOT AFFECTED`.
+**LAW-DEV-004 — MUST.** Every iteration MUST inspect its relevant touchpoints and classify them as `CHANGE`, `VERIFY`, or `NOT AFFECTED`. This classification MAY live in iteration notes or evidence and need not make the sequence CSV verbose.
 
 **LAW-DEV-005 — MUST NOT.** Touchpoints MUST NOT be treated as branches. Branches identify responsibility ownership; touchpoints identify the system surfaces crossed by an iteration.
 
@@ -88,6 +88,8 @@ A minimal snapshot SHOULD contain FSL version, project, project version, four br
 **POLICY-DEV-007 — SHOULD.** A change SHOULD touch the smallest number of branches necessary, while all four branches SHOULD be inspected for impact before the iteration is accepted.
 
 **POLICY-DEV-008 — SHOULD.** Later design decisions SHOULD use evidence and learning from earlier proven iterations rather than assuming the final implementation is fully known in advance.
+
+**POLICY-DEV-009 — SHOULD.** A project SHOULD seed only a few kickoff iterations—enough to begin end-to-end learning—and append later iterations as earlier rows become PROVEN. The sequence CSV SHOULD remain short and readable rather than pre-plan the whole final system.
 
 Short development axiom: **ITERATE -> TOUCH -> PROVE -> LEARN -> INCREMENT.**
 
