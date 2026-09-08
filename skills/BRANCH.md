@@ -1,5 +1,7 @@
-# skill-v1.4
+# skill-v1.5
 
-Owns agent instructions for generating, updating, validating, recalling and packaging FSL v1.4 artifacts.
+Owns the FSL v1.5 generation and validation method for humans and AI.
 
-This lane continues from `skill-v1.3`. It adds strategy declaration, Touchpoint Set handling, E2E/E2M/M2E/parallel/meet-in-the-middle/incremental development guidance, and compact technology/library/reference/link handling while preserving v1.3 traceability and authority rules.
+v1.5 keeps traceability, proof and E2E guardrails while simplifying development guidance to one initial sequence, compact essential references and the ownership footer. It explicitly avoids full iteration ledgers, YAML trackers and extra path/mode/growth machinery.
+
+This lane continues directly from `skill-v1.4`.
