@@ -1,38 +1,38 @@
 # Four-Square Letterhead (FSL)
 
-**Current integrated version: FSL v1.4**  
-**Template identity: Four-Square Template v1.4**
+**Current integrated version: FSL v1.5**  
+**Template identity: Four-Square Template v1.5**
 
-FSL is a compact, file-backed project constitution / contract / technical letterhead for humans and AI. It remains **1–3 pages maximum**.
+FSL is a compact, file-backed project constitution and working letterhead for humans and AI. It stays deliberately small: **1–3 pages maximum**.
 
-## v1.4 focus
-FSL v1.4 preserves v1.3 traceability and adds two focused project-governance surfaces:
-
-### Development Strategy
-Every material iteration declares its strategy and Touchpoint Set. Canonical strategies are `E2E`, `E2M`, `M2E`, `PARALLEL E2E`, `MEET-IN-THE-MIDDLE`, and `INCREMENTAL E2E`.
-
-**TOUCH EVERYTHING REQUIRED; COMPLETE LITTLE; GROW WHAT IS PROVEN.**
-
-### Implementation References
-Important implementation material may be recorded as `TECHNOLOGY`, `LIBRARY`, `REFERENCE`, or `LINK`, with explicit `FORCE`, `RELATION`, `PURPOSE`, and `SOURCE`. Relation continues to use `REUSE / INHERIT / REFERENCE`.
+> **FSL owns the method. The project owns the work.**
 
 ## Four-Square model
-`SPEC` and `MEMORY` are fixed. The two middle lanes are project-defined.
-
-For FSL itself:
 
 ```text
-spec-v1.4 | templates-v1.4 | skill-v1.4 | memory-v1.4
+main1
+  ↓
+[ spec-vN | <project-lane-a>-vN | <project-lane-b>-vN | memory-vN ]
 ```
 
-## Retained foundations
-- MUST / MUST NOT / SHOULD / SHOULD NOT / MAY
-- stable clause IDs
-- scoped proof tuple
-- exact four-commit release snapshot
-- framework-version vs project-version separation
-- MEMORY may remember law; MEMORY cannot make law
-- AI ambiguity rule
+Only SPEC and MEMORY are fixed. The two middle lanes belong to the project and remain project-defined.
+
+## v1.5 working method
+
+```text
+I-001: tiny input -> required touchpoints -> observable output -> prove -> grow
+```
+
+That initial sequence is enough. Parallel E2E, E2M, M2E and meet-in-the-middle MAY be used where appropriate. FSL does not require YAML iteration schemas, full future-iteration plans or per-iteration ledgers.
+
+Essential implementation references stay compact:
+
+```text
+ITEM | INTENT / USE | CANONICAL SOURCE
+```
+
+FSL retains stable clause IDs, scoped proof, exact four-commit release snapshots, REUSE / INHERIT / REFERENCE semantics, AI ambiguity guardrails, and the rule that component evidence MUST NOT be overstated as E2E proof.
 
 ## Release rule
+
 **One version, four squares, all green.**

@@ -1,5 +1,7 @@
-# memory-v1.4
+# memory-v1.5
 
-Owns human + AI recall material for FSL v1.4: canonical file-backed recall, development strategies and Touchpoint Sets, implementation-reference classes, plus retained v1.3 traceability, snapshot, version, relation and authority rules.
+Owns human + AI file-backed recall for FSL v1.5.
 
-This lane continues from `memory-v1.3`. MEMORY is non-normative: MEMORY may remember law; MEMORY cannot make law.
+v1.5 remembers the simplified initial development sequence, compact essential references, project-relative lane identity, proof/snapshot rules and the ownership boundary. MEMORY remains non-normative: MEMORY may remember law; MEMORY cannot make law.
+
+This lane continues directly from `memory-v1.4`.
