@@ -1,7 +1,7 @@
-# spec-v1.5
+# spec-v1.6
 
-Owns the FSL v1.5 constitutional identity and compact project method.
+Owns the FSL v1.6 constitutional identity and release lifecycle.
 
-v1.5 preserves v1.4 traceability, proof, release-snapshot, reference and E2E guardrails while simplifying development guidance to one initial sequence instead of per-iteration bookkeeping. It also makes the ownership boundary visible: FSL owns the method; the project owns the work.
+v1.6 retains the compact v1.5 method, ownership boundary, initial E2E strategy, traceability, proof and reference rules. It adds one post-release lifecycle: Draft -> Prove -> Release -> Appendix / Errata / Amendment -> Next Release. Released SPEC stays immutable; lifecycle artifacts remain separate until the next release absorbs adopted changes.
 
-This lane continues directly from `spec-v1.4`. FSL remains 1–3 pages; SPEC and MEMORY remain fixed lanes and the two middle lanes remain project-defined.
+This lane continues directly from `spec-v1.5`. FSL remains 1–3 pages; SPEC and MEMORY remain fixed lanes and the two middle lanes remain project-defined.

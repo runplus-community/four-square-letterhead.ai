@@ -1,7 +1,7 @@
 # Four-Square Letterhead (FSL)
 
-**Current integrated version: FSL v1.5**  
-**Template identity: Four-Square Template v1.5**
+**Current integrated version: FSL v1.6**  
+**Template identity: Four-Square Template v1.6**
 
 FSL is a compact, file-backed project constitution and working letterhead for humans and AI. It stays deliberately small: **1–3 pages maximum**.
 
@@ -17,7 +17,7 @@ main1
 
 Only SPEC and MEMORY are fixed. The two middle lanes belong to the project and remain project-defined.
 
-## v1.5 working method
+## Working method
 
 ```text
 I-001: tiny input -> required touchpoints -> observable output -> prove -> grow
@@ -31,7 +31,15 @@ Essential implementation references stay compact:
 ITEM | INTENT / USE | CANONICAL SOURCE
 ```
 
-FSL retains stable clause IDs, scoped proof, exact four-commit release snapshots, REUSE / INHERIT / REFERENCE semantics, AI ambiguity guardrails, and the rule that component evidence MUST NOT be overstated as E2E proof.
+## Release lifecycle
+
+```text
+Draft -> Prove -> Release -> Appendix / Errata / Amendment -> Next Release
+```
+
+A released SPEC stays immutable. APPENDIX clarifies/supports without changing normative intent. ERRATA corrects an error without changing normative intent. AMENDMENT is the explicit path for a post-release normative change. The next release should absorb adopted errata/amendments into a new clean baseline.
+
+> **Release is immutable. Clarify with appendix, correct with errata, change with amendment.**
 
 ## Release rule
 
