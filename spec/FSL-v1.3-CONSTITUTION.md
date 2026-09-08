@@ -72,8 +72,27 @@ A minimal snapshot SHOULD contain FSL version, project, project version, four br
 
 **LAW-AI-002 — MUST.** The agent MUST surface the ambiguity for review and MUST NOT claim conformance on the unresolved interpretation. Missing proof remains NOT YET PROVEN.
 
-## Article X - Development and amendments
-Development SHOULD use visible checklists for material work. Agents MAY perform Discover -> Plan -> Execute -> Observe -> Verify -> Record with defined responsibility. Binding constitutional changes MUST be made in SPEC and versioned.
+## Article X - Iterative end-to-end development
+**LAW-DEV-001 — MUST.** Every material development iteration MUST produce one observable end-to-end outcome and evidence. End-to-end means the complete path for that iteration's small requirement, not the entire final product.
+
+**LAW-DEV-002 — MUST NOT.** An iteration MUST NOT be considered complete at "implemented" alone. The requirement -> implementation -> usable state -> checker -> evidence loop MUST close.
+
+**POLICY-DEV-003 — SHOULD.** Each iteration SHOULD begin from the latest PROVEN baseline and SHOULD preserve previously proven behavior unless the current requirement explicitly changes it.
+
+**LAW-DEV-004 — MUST.** Every iteration MUST inspect its relevant touchpoints and classify them as `CHANGE`, `VERIFY`, or `NOT AFFECTED`.
+
+**LAW-DEV-005 — MUST NOT.** Touchpoints MUST NOT be treated as branches. Branches identify responsibility ownership; touchpoints identify the system surfaces crossed by an iteration.
+
+**POLICY-DEV-006 — SHOULD.** Development SHOULD use one short ordered sequence CSV as its spine. Recommended columns are `Seq,Iteration,Requirement,Touchpoints,E2E Path,Proof,Status`; recommended states are `PLANNED`, `ACTIVE`, `PROVEN`, `BLOCKED`.
+
+**POLICY-DEV-007 — SHOULD.** A change SHOULD touch the smallest number of branches necessary, while all four branches SHOULD be inspected for impact before the iteration is accepted.
+
+**POLICY-DEV-008 — SHOULD.** Later design decisions SHOULD use evidence and learning from earlier proven iterations rather than assuming the final implementation is fully known in advance.
+
+Short development axiom: **ITERATE -> TOUCH -> PROVE -> LEARN -> INCREMENT.**
+
+## Article XI - Amendments and page boundary
+Binding constitutional changes MUST be made in SPEC and versioned. Agents MAY perform Discover -> Plan -> Execute -> Observe -> Verify -> Record with defined responsibility.
 
 **LAW-PAGE-001 — MUST NOT.** FSL MUST NOT exceed three pages. Details that outgrow the letterhead SHOULD move to supporting artifacts referenced by clause ID or proof record.
 

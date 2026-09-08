@@ -1,5 +1,5 @@
-# skill-v1.3
+# skill-v1.4
 
-Owns agent instructions for generating, updating, validating, recalling, and packaging FSL v1.3 traceable constitutional artifacts.
+Owns agent instructions for generating, updating, validating, recalling and packaging FSL v1.4 artifacts.
 
-This lane continues from `skill-v1.2`. It adds stable clause-ID generation, scoped proof records, Four-Square release snapshots, version-separation checks, REUSE/INHERIT/REFERENCE semantics, AI ambiguity handling, and the MEMORY authority axiom without creating new constitutional law outside SPEC.
+This lane continues from `skill-v1.3`. It adds strategy declaration, Touchpoint Set handling, E2E/E2M/M2E/parallel/meet-in-the-middle/incremental development guidance, and compact technology/library/reference/link handling while preserving v1.3 traceability and authority rules.

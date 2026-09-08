@@ -1,5 +1,5 @@
-# spec-v1.3
+# spec-v1.4
 
-Owns the FSL v1.3 constitutional identity and traceability law: stable clause IDs, framework/project version separation, scoped proof, exact four-commit release snapshots, REUSE/INHERIT/REFERENCE semantics, AI ambiguity boundaries, and the existing v1.2 normative vocabulary.
+Owns the FSL v1.4 constitutional identity: v1.3 traceability/proof/snapshot law plus explicit development strategies, Touchpoint Sets, iteration evidence/exit conditions, and implementation-reference governance.
 
-This branch continues directly from `spec-v1.2`. FSL remains 1-3 pages; detailed evidence belongs in supporting artifacts rather than new constitutional categories.
+This lane continues directly from `spec-v1.3`. FSL remains 1-3 pages and keeps the existing constitutional vocabulary compact.

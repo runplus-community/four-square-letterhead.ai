@@ -19,6 +19,19 @@ This checklist is RECOMMENDED. It becomes binding only when a LAW or CONTRACT ex
 - [ ] Accepted release snapshot records branch + commit for all four lanes.
 - [ ] Snapshot is declarative and does not replace Git.
 
+## Iteration / touchpoints
+- [ ] One short ordered sequence CSV is the development spine.
+- [ ] CSV rows are in explicit `Seq` order.
+- [ ] Each row contains one small useful requirement.
+- [ ] Every row has an end-to-end path that closes at observable proof.
+- [ ] No iteration is marked complete at `implemented` alone.
+- [ ] Relevant touchpoints are identified and classified `CHANGE`, `VERIFY`, or `NOT AFFECTED`.
+- [ ] Touchpoints are treated as system surfaces, not branches.
+- [ ] The iteration starts from the latest PROVEN baseline when applicable.
+- [ ] Previously proven behavior is preserved unless explicitly changed.
+- [ ] All four branches were inspected for impact before acceptance.
+- [ ] Status is one of `PLANNED`, `ACTIVE`, `PROVEN`, `BLOCKED`.
+
 ## Evidence / proof
 - [ ] Material conformance claims use CLAIM / SCOPE / ENVIRONMENT / EVIDENCE / RESULT.
 - [ ] Result is one of the four canonical conformance states.
