@@ -1,0 +1,104 @@
+name: Build FSL v1.2 branch release
+
+on:
+  push:
+    branches: [release/fsl-v1.2]
+    paths:
+      - '.github/workflows/build-fsl-v1.2-release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  assemble-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch release
+        uses: actions/checkout@v4
+        with:
+          ref: release/fsl-v1.2
+
+      - name: Install verification tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils zip
+
+      - name: Assemble canonical FSL v1.2 file set
+        run: |
+          set -euo pipefail
+          rm -rf release/v1.2 /tmp/FSL-Pack-v1.2
+          mkdir -p release/v1.2 /tmp/FSL-Pack-v1.2
+
+          cp templates/v1.2/FSL-v1.2-Template-1P.docx release/v1.2/
+          cp templates/v1.2/FSL-v1.2-Template-1P.pdf release/v1.2/
+          cp templates/v1.2/FSL-v1.2-Template-2P.docx release/v1.2/
+          cp templates/v1.2/FSL-v1.2-Template-2P.pdf release/v1.2/
+          cp templates/v1.2/FSL-v1.2-Template-3P.docx release/v1.2/
+          cp templates/v1.2/FSL-v1.2-Template-3P.pdf release/v1.2/
+          cp templates/v1.2/FSL-v1.2-Sample-Django-2P.docx release/v1.2/
+          cp templates/v1.2/FSL-v1.2-Sample-Django-2P.pdf release/v1.2/
+          cp spec/FSL-v1.2-CONSTITUTION.md release/v1.2/
+          cp spec/FSL-v1.2-MANIFEST.yaml release/v1.2/
+          cp skills/FSL-v1.2-SKILL.md release/v1.2/
+          cp skills/FSL-v1.2-CHECKLIST.md release/v1.2/
+          cp memory/FSL-v1.2-MEMORY.md release/v1.2/
+          cp RELEASES/FSL-v1.2.md release/v1.2/RELEASE-NOTES-FSL-v1.2.md
+          cp README.md release/v1.2/README-FSL-v1.2.md
+          cp VERSION release/v1.2/VERSION
+
+      - name: Verify document contract
+        run: |
+          set -euo pipefail
+          test "$(pdfinfo release/v1.2/FSL-v1.2-Template-1P.pdf | awk '/^Pages:/ {print $2}')" = 1
+          test "$(pdfinfo release/v1.2/FSL-v1.2-Template-2P.pdf | awk '/^Pages:/ {print $2}')" = 2
+          test "$(pdfinfo release/v1.2/FSL-v1.2-Template-3P.pdf | awk '/^Pages:/ {print $2}')" = 3
+          test "$(pdfinfo release/v1.2/FSL-v1.2-Sample-Django-2P.pdf | awk '/^Pages:/ {print $2}')" = 2
+
+          for p in release/v1.2/*.pdf; do
+            pdftotext "$p" - | grep -q 'Four-Square Template v1.2'
+          done
+          pdftotext release/v1.2/FSL-v1.2-Sample-Django-2P.pdf - | grep -q 'Django Sample v1.2'
+          pdftotext release/v1.2/FSL-v1.2-Template-1P.pdf - | grep -q 'MUST'
+          grep -q 'NON-CONFORMANT' release/v1.2/FSL-v1.2-CONSTITUTION.md
+          grep -q 'Agents MUST NOT' release/v1.2/FSL-v1.2-SKILL.md
+          grep -q 'SPEC and MEMORY' release/v1.2/FSL-v1.2-MEMORY.md
+          test "$(cat release/v1.2/VERSION)" = '1.2'
+
+      - name: Create checksums and release pack
+        run: |
+          set -euo pipefail
+          cd release/v1.2
+          sha256sum FSL-v1.2-Template-*.docx FSL-v1.2-Template-*.pdf FSL-v1.2-Sample-Django-2P.docx FSL-v1.2-Sample-Django-2P.pdf FSL-v1.2-CONSTITUTION.md FSL-v1.2-MANIFEST.yaml FSL-v1.2-SKILL.md FSL-v1.2-CHECKLIST.md FSL-v1.2-MEMORY.md README-FSL-v1.2.md RELEASE-NOTES-FSL-v1.2.md VERSION > SHA256SUMS.txt
+          cp FSL-v1.2-* README-FSL-v1.2.md RELEASE-NOTES-FSL-v1.2.md SHA256SUMS.txt VERSION /tmp/FSL-Pack-v1.2/
+          cd /tmp
+          zip -qr FSL-Pack-v1.2.zip FSL-Pack-v1.2
+          cp FSL-Pack-v1.2.zip "$GITHUB_WORKSPACE/release/v1.2/"
+          cd "$GITHUB_WORKSPACE/release/v1.2"
+          sha256sum FSL-Pack-v1.2.zip > FSL-Pack-v1.2.zip.sha256
+
+      - name: Write branch release index
+        run: |
+          cat > release/v1.2/ARTIFACTS.md <<'EOF'
+          # FSL v1.2 branch release artifacts
+
+          This directory is the canonical branch-scoped FSL v1.2 release snapshot.
+
+          It contains the actual 1P/2P/3P DOCX+PDF templates, Django 2P DOCX+PDF sample, constitution, manifest, skill, recommended checklist, memory, release notes, complete ZIP, ZIP checksum and per-file SHA256SUMS.
+
+          Build rules verify exact page counts, visible `Four-Square Template v1.2`, the separate `Django Sample v1.2` identity, constitutional vocabulary, and version `1.2` before this directory is committed.
+
+          Because the repository is public, this branch is publicly readable even though it is not a GitHub Releases-page publication.
+          EOF
+
+      - name: Commit verified branch release
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add release/v1.2
+          if git diff --cached --quiet; then
+            echo 'No release changes.'
+          else
+            git commit -m 'release: build verified FSL v1.2 branch artifacts [skip ci]'
+            git push origin HEAD:release/fsl-v1.2
+          fi
