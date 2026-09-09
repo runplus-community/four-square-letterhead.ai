@@ -1,0 +1,31 @@
+name: Validate FSL v1.8 skill
+on:
+  push:
+    branches: [skill-v1.8]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-skill:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Preserve earlier method and verify accepted English
+        run: |
+          set -euo pipefail
+          git diff --exit-code a1cbdd2a842e987baeafd740d45932bac1472fef -- skills/FSL-v1.7-SKILL.md skills/FSL-v1.7-CHECKLIST.md
+          python - <<'PY'
+          from pathlib import Path
+          from hashlib import sha256
+          s=Path('skills/FSL-v1.8-SKILL.md').read_text()
+          assert sha256(s.encode()).hexdigest() == '6043e0566626e403ac9509c23a43b9b7957158d2da6c1ed04a9c9a455bd2ffe7'
+          assert sha256(s[s.index('## 1.'):].encode()).hexdigest() == 'ae188b63f55e300bd05a47b7aa06aa4c8cd5e63ed06c2822e0770e7eb7634eab'
+          assert s.count('\n## ') == 3
+          assert 'I-001' not in s
+          for token in ('Route defines expected coverage; run records observed coverage.', 'Squares own artifacts; routes cross only the artifacts needed for the claimed outcome.', 'development SHOULD begin with four E2E learning goals', 'Historical and future iteration plans are optional', 'A proposal is not approval.', 'MEMORY may remember law; MEMORY cannot make law.'):
+              assert token in s, token
+          print('PASS: exact adopted English; all three method sections match the approved candidate')
+          PY

@@ -1,0 +1,26 @@
+name: Validate FSL v1.7 memory
+on:
+  push:
+    branches: [memory-v1.7]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-memory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Validate recall and preserve v1.6
+        run: |
+          set -euo pipefail
+          git diff --exit-code 6cecbed1fee02a5b3c59dec2cedd6cc37de726e9 -- memory/FSL-v1.6-MEMORY.md
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('memory/FSL-v1.7-MEMORY.md').read_text()
+          for token in ('FSL v1.7','SPEC / SYSTEM / AI / MEMORY','FSL is the first SPEC item','Historical and future iteration plans are optional','R-01 = stable project-scoped route','NOT RUN','A committed proposal is not adopted law','MEMORY may remember law; MEMORY cannot make law.','account-level memory'):
+              assert token in s,token
+          print('PASS: file-backed recall, prospective adoption, route evidence and authority boundary')
+          PY

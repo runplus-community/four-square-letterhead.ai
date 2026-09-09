@@ -1,0 +1,103 @@
+name: Build FSL v1.2 templates
+
+on:
+  push:
+    branches: [templates-v1.2]
+    paths:
+      - 'templates/v1.2/build_templates.py'
+      - '.github/workflows/build-fsl-v1.2-templates.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-templates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout templates lane
+        uses: actions/checkout@v4
+        with:
+          ref: templates-v1.2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install document tooling
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libreoffice-writer poppler-utils
+          python -m pip install --disable-pip-version-check python-docx
+
+      - name: Generate DOCX artifacts
+        run: python templates/v1.2/build_templates.py
+
+      - name: Render PDFs
+        run: |
+          mkdir -p /tmp/fslpdf
+          for f in templates/v1.2/*.docx; do
+            libreoffice --headless --convert-to pdf --outdir /tmp/fslpdf "$f" >/dev/null
+          done
+          cp /tmp/fslpdf/*.pdf templates/v1.2/
+
+      - name: Validate FSL v1.2 artifacts
+        run: |
+          set -euo pipefail
+          test "$(pdfinfo templates/v1.2/FSL-v1.2-Template-1P.pdf | awk '/^Pages:/ {print $2}')" = 1
+          test "$(pdfinfo templates/v1.2/FSL-v1.2-Template-2P.pdf | awk '/^Pages:/ {print $2}')" = 2
+          test "$(pdfinfo templates/v1.2/FSL-v1.2-Template-3P.pdf | awk '/^Pages:/ {print $2}')" = 3
+          test "$(pdfinfo templates/v1.2/FSL-v1.2-Sample-Django-2P.pdf | awk '/^Pages:/ {print $2}')" = 2
+          python - <<'PY'
+          from pathlib import Path
+          from docx import Document
+          root=Path('templates/v1.2')
+          docs=[root/'FSL-v1.2-Template-1P.docx',root/'FSL-v1.2-Template-2P.docx',root/'FSL-v1.2-Template-3P.docx',root/'FSL-v1.2-Sample-Django-2P.docx']
+          for p in docs:
+              d=Document(p)
+              all_text=[]
+              for s in d.sections:
+                  for para in s.header.paragraphs+s.footer.paragraphs: all_text.append(para.text)
+                  for tbl in list(s.header.tables)+list(s.footer.tables):
+                      for row in tbl.rows:
+                          for cell in row.cells: all_text.append(cell.text)
+              for para in d.paragraphs: all_text.append(para.text)
+              for tbl in d.tables:
+                  for row in tbl.rows:
+                      for cell in row.cells: all_text.append(cell.text)
+              text='\n'.join(all_text)
+              assert 'Four-Square Template v1.2' in text, p
+              if 'Django' in p.name: assert 'Django Sample v1.2' in text, p
+              emphasized=0
+              for para in list(d.paragraphs):
+                  for run in para.runs:
+                      if any(t in run.text for t in ('MUST','SHOULD','MAY','CONFORMANT','EXCEPTION')) and run.bold and run.underline:
+                          emphasized += 1
+              for tbl in d.tables:
+                  for row in tbl.rows:
+                      for cell in row.cells:
+                          for para in cell.paragraphs:
+                              for run in para.runs:
+                                  if any(t in run.text for t in ('MUST','SHOULD','MAY','CONFORMANT','EXCEPTION')) and run.bold and run.underline:
+                                      emphasized += 1
+              assert emphasized >= 4, (p, emphasized)
+          print('FSL v1.2 document validation passed')
+          PY
+
+      - name: Generate template checksums
+        run: |
+          cd templates/v1.2
+          sha256sum FSL-v1.2-Template-*.docx FSL-v1.2-Template-*.pdf FSL-v1.2-Sample-Django-2P.docx FSL-v1.2-Sample-Django-2P.pdf > SHA256SUMS.txt
+
+      - name: Commit verified templates
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add templates/v1.2/FSL-v1.2-*.docx templates/v1.2/FSL-v1.2-*.pdf templates/v1.2/SHA256SUMS.txt
+          if git diff --cached --quiet; then
+            echo 'No generated changes.'
+          else
+            git commit -m 'templates: build verified FSL v1.2 artifacts [skip ci]'
+            git push origin HEAD:templates-v1.2
+          fi
