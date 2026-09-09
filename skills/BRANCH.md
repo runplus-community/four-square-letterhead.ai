@@ -1,3 +1,3 @@
-# skill-v1.7
+# skill-v1.8
 
-Continues skill-v1.6. Owns the v1.7 generation/adoption skill and four-item release checklist. Guides concrete defaults, optional existing-project iterations, visible R-01 touchpoints on every run, scoped evidence and explicitly adopted lifecycle changes. Previous released instructions remain unchanged.
+Continues skill-v1.7. Owns the authoritative plain-English v1.8 method adopted by SPEC. Its PDF/DOCX reading copies belong to TEMPLATES. No duplicate normative constitution is introduced. Publication metadata is separate from method content.
