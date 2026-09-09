@@ -1,0 +1,6 @@
+5bb54bf86a503bc38def5d2c3fbc5de1d40932b48eacd753b8414206df370574  FSL-v1.8-Plain-English-Method-3P.docx
+b2101c5469bc88e7a797320a8dfef454a392b03319172e9283aa1c35c62de62c  FSL-v1.8-Sample-Django-1P.docx
+a3521e523714fdfc6c005e13751ced1434ccffc6e61cfc799e110b16b3058078  FSL-v1.8-Template-1P.docx
+8fad6fa23132b13b494aea016dda7bc57dbeed22ee1721ddf80e89d52c3ad8af  FSL-v1.8-Plain-English-Method-3P.pdf
+861e512fe3161a2009956f33c384c3dd1e640d355226e87e99dc18aa465df462  FSL-v1.8-Sample-Django-1P.pdf
+cce31dda44f9dc270a3aa12fb966cb7c6729e07bab9a253e88724ad8dcdb6b4b  FSL-v1.8-Template-1P.pdf
