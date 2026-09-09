@@ -1,3 +1,3 @@
-# memory-v1.7
+# memory-v1.8
 
-Continues memory-v1.6. Owns non-normative, file-backed recall of the concrete squares, FSL-first SPEC, existing-system adoption, optional iterations, R-01 routes, visible per-run touchpoints and adopted lifecycle changes. MEMORY may remember law; MEMORY cannot make law.
+Continues memory-v1.7. Owns non-normative, file-backed recall for the v1.8 English method. The authoritative method is adopted by SPEC from the exact SKILL commit. Publication is established by the release snapshot and artifact commit, never by this memory file.

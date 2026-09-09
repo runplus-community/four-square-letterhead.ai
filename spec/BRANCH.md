@@ -1,3 +1,5 @@
-# spec-v1.7
+# spec-v1.8
 
-Continues spec-v1.6. Owns the v1.7 Constitution, concrete-square and prospective-adoption rules, route/run coverage contract, lifecycle guide and change description. Existing release files remain unchanged. FSL's own middle lanes remain TEMPLATES / SKILL; SYSTEM / AI are defaults for adopting projects, not forced renames.
+FSL first: `FSL-v1.8-ADOPTION.md` identifies the exact adopted English method and its scope. `FSL-v1.8-COMPLETION.md` preserves the approved local content review as historical evidence, not a publication claim.
+
+This lane continues spec-v1.7 without changing earlier versioned specifications. The four-lane release snapshot supplies integration and publication identity.

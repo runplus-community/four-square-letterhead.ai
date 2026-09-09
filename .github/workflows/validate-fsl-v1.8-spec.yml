@@ -1,0 +1,30 @@
+name: Validate FSL v1.8 spec
+on:
+  push:
+    branches: [spec-v1.8]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-spec:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Verify adoption and approved scope evidence
+        run: |
+          set -euo pipefail
+          git diff --exit-code 4459190a485d563746c1d0721428e72898fa1f84 -- spec/FSL-v1.7-CONSTITUTION.md
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,re
+          a=Path('spec/FSL-v1.8-ADOPTION.md').read_text()
+          assert 'b28a616ae7292913c9f7e3c10095e73c74b9019b' in a
+          assert '6043e0566626e403ac9509c23a43b9b7957158d2da6c1ed04a9c9a455bd2ffe7' in a
+          p=Path('spec/FSL-v1.8-COMPLETION.md')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='51c562cba7f06a4def9f0158d4a2e861e7a9defc6ee48015ac0487e2e5bf561a'
+          assert len(re.findall(r'^\*\*\d{2} — Covered\.',p.read_text(),re.M))==40
+          print('PASS: exact adoption, unchanged 40-item content review and v1.7 baseline')
+          PY

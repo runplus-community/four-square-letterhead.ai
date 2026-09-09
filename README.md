@@ -1,56 +1,21 @@
-# Four-Square Letterhead (FSL) v1.7
+# Four-Square Letterhead — FSL v1.8
 
-**Concrete squares. Prospective adoption. Visible E2E routes.**
+**Plain-English Method.** A compact project identity, contract and working method for humans and agents.
 
-FSL is a compact project identity and constitutional letterhead for humans and AI. Start with one page; use two or three only when essential detail needs room. The completed project letterhead is the first item inside SPEC, not a fifth square.
+Read [the authoritative English method](skills/FSL-v1.8-SKILL.md). [SPEC adoption](spec/FSL-v1.8-ADOPTION.md) identifies its exact source and scope; it does not create a competing constitution. [The completion review](spec/FSL-v1.8-COMPLETION.md) accounts for the 40 agreed content items and records the earlier local completion step. Current integration and publication are identified separately by the release snapshot and assembly record.
 
-> **FSL owns the method. The project owns the work.**
+Start with **SPEC / SYSTEM / AI / MEMORY**. SPEC lists the project's completed FSL first. SYSTEM/AI are recommended defaults; justified alternatives remain valid. FSL's own repository retains TEMPLATES/SKILL. Project work belongs in its project repository.
 
-## Start concrete
+One page is enough when it explains the project. Use two or three when needed, without compulsory page assignments or blank forms. The [one-page template](templates/v1.8/FSL-v1.8-Template-1P.pdf) and [Django illustration](templates/v1.8/FSL-v1.8-Sample-Django-1P.pdf) are editable authoring/example aids, not additional authorities.
 
-`[ SPEC | SYSTEM | AI | MEMORY ]`
+**R-01: input → required touchpoints → observable output.** Route defines expected coverage; run records observed coverage. Iterative work remains; compulsory I- numbering does not. Keep run details in normal evidence records rather than touchpoint tables on the letterhead.
 
-| Square | Main responsibility |
-|---|---|
-| SPEC | FSL first; scope, requirements, contracts, guardrails, acceptance and routes. Optional appendix, errata and amendments. |
-| SYSTEM | Product implementation, runtime, data, API/UI, build material and product checks. |
-| AI | Instructions, agents, skills, prompts, AI workflows and evaluations where applicable. |
-| MEMORY | Decisions, rationale, context, limitations, handover and evidence links. |
+New projects SHOULD begin with four E2E learning goals: tiny complete path → useful behavior → boundary/recovery → intended-use rehearsal → grow. Existing projects can adopt a reviewed current baseline without recreating development history. Appendix explains; errata corrects without changing intent; adopted amendments change intent. A proposal is not approval.
 
-SPEC and MEMORY are fixed. SYSTEM and AI are recommended defaults, not forced renames. FSL itself keeps its TEMPLATES / SKILL specialization. Ownership follows purpose, not the author; agent-generated product code is still product code.
+## Release files
 
-## One route, visible on every run
+The branch-scoped publication location is `release/fsl-v1.8`, directory `release/v1.8/`. It contains the real documents, exact English method, recall, adoption/snapshot notes, completion review, build source and verifier, manifest, checksums and downloadable pack. It is a public branch release, not a GitHub Releases-page entry. The final artifact commit and assembly record establish publication; source integration alone does not.
 
-`R-01: input -> required touchpoints -> observable output`
+The release pack differs from the local candidate in publication metadata, generated document packaging and added build/evidence files. The three method sections and template/sample body wording are checked unchanged. Django runtime remains NOT RUN; consuming-project conformance is NOT YET PROVEN.
 
-The route declares its expected outcome and SPEC/version boundary. Every run shows every declared point before execution, then retains PASS / FAIL / NOT RUN plus connected evidence and actual revision/environment. A skipped point, stubbed integration or component pass is not proof of the wider route. Never prefill success. R-01 is a route ID, not an iteration or run number.
-
-New project: `I-001: tiny R-01 -> verify -> grow`.
-
-Existing project: `study / reverse-engineer as needed -> reviewed adoption baseline -> verify critical routes`. Historical and future iteration plans are optional. Distinguish observed behavior from adopted promises; do not rewrite history or rebuild a working capability just to adopt FSL.
-
-## Lifecycle
-
-`Draft -> Prove -> Release -> Maintain as needed -> Next release`
-
-Appendix supports understanding; errata corrects without changing intent; an explicitly adopted amendment changes released intent. A committed proposal is not adopted law. The released baseline stays addressable and unchanged. The next release incorporates applicable adopted changes.
-
-No YAML payload, mandatory iteration ledger, route database, lifecycle registry or empty support documents. Detailed evidence stays in the project repository.
-
-## Files and quick start
-
-Use `FSL-v1.7-Template-1P.docx` as the editable starting point and its PDF as the visual reference. The 2P template adds a route/run-sheet and adoption guidance; the 3P template adds release identity and lifecycle detail. The Django 2P sample is illustrative: runtime NOT RUN, not an upstream adoption or test claim.
-
-In the repository, documents and standalone build/check scripts are under `templates/v1.7/`; method files are under `spec/`, `skills/` and `memory/`. In the release ZIP, documents and method files are at the root, with build/check scripts under `source/`. Start with the Constitution, then the ROUTES and ADOPTION guides as needed. The ROUTES guide contains a blank run sheet; it does not prescribe a storage format.
-
-Verify an unpacked release from its root with `python -B source/verify_package.py --root .` after installing Poppler command-line tools. Do not run full-payload verification on the repository artifact directory that also contains the distribution ZIP; unpack the ZIP to a clean directory first. Build instructions are in `source/README.md` inside the pack. No fonts are distributed.
-
-## This framework release
-
-The exact four reviewed commits and lane CI evidence are recorded in `FSL-v1.7-SNAPSHOT.md` in the pack and `RELEASES/FSL-v1.7-SNAPSHOT.md` in Git. The validation report scopes the completed checks. A checksum verifies bytes, not project behavior or authority by itself.
-
-FSL's release-assembly route R-01 is: `reviewed integration -> exact source/document identities -> payload assembly -> ZIP -> clean extraction -> payload verification`. Its expected outcome is a complete, hash-verified v1.7 document/method pack. Document generation is separately evidenced by the linked template build; the assembly run consumes those exact artifacts rather than claiming it regenerated them. Publication is a separate action recorded by the successful branch push and final commit.
-
-The established publication channel is the public branch `release/fsl-v1.7`, not a GitHub Releases-page entry. A branch can move; use the exact final commit and ZIP checksum to identify the published snapshot. Previous release files remain unchanged.
-
-**One version, four squares, all green.**
+**FSL owns the method. The project owns the work.**
