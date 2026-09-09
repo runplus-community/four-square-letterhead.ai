@@ -1,0 +1,45 @@
+fsl:
+  name: Four-Square Letterhead
+  version: "1.4"
+  template_identity: "Four-Square Template v1.4"
+
+fixed_lanes:
+  - spec
+  - memory
+middle_lanes: project-defined
+page_depth: [1, 2, 3]
+
+normative_terms:
+  binding: [MUST, MUST_NOT]
+  strong_guidance: [SHOULD, SHOULD_NOT]
+  permission: [MAY]
+
+traceability:
+  clause_id: FORM-SCOPE-NNN
+  proof_tuple: [CLAIM, SCOPE, ENVIRONMENT, EVIDENCE, RESULT]
+  release_snapshot_authority: git
+
+development_strategy:
+  strategies:
+    - E2E
+    - E2M
+    - M2E
+    - PARALLEL_E2E
+    - MEET_IN_THE_MIDDLE
+    - INCREMENTAL_E2E
+  iteration_fields:
+    - STRATEGY
+    - TOUCHPOINT_SET
+    - START
+    - MIDPOINT
+    - END
+    - EXPECTED_EVIDENCE
+    - EXIT_CONDITION
+  axiom: "TOUCH EVERYTHING REQUIRED; COMPLETE LITTLE; GROW WHAT IS PROVEN."
+
+implementation_references:
+  classes: [TECHNOLOGY, LIBRARY, REFERENCE, LINK]
+  fields: [CLASS, ITEM, FORCE, RELATION, PURPOSE, SOURCE]
+  relations: [REUSE, INHERIT, REFERENCE]
+
+release_axiom: "One version, four squares, all green."

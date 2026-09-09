@@ -1,0 +1,27 @@
+name: Validate FSL v1.8 memory
+on:
+  push:
+    branches: [memory-v1.8]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-memory:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Verify recall and preserve earlier memory
+        run: |
+          set -euo pipefail
+          git diff --exit-code d77a5267feaa87de2df2d652f59a5465439d7e5d -- memory/FSL-v1.7-MEMORY.md
+          python - <<'PY'
+          from pathlib import Path
+          s=Path('memory/FSL-v1.8-MEMORY.md').read_text()
+          for t in ('non-normative','spec/FSL-v1.8.md','skills/FSL-v1.8-SKILL.md','FSL-v1.8-Template-1P.docx','FSL-v1.8-Sample-Django-1P.pdf','NOT RUN','Route defines expected coverage; run records observed coverage.','MEMORY may remember law; MEMORY cannot make law.'):
+              assert t in s,t
+          assert 'v1.8 — File-backed recall' in s
+          print('PASS: file-backed recall, version, route semantics and non-normative boundary')
+          PY
