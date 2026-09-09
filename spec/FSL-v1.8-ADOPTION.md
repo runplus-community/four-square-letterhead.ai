@@ -23,3 +23,9 @@ The expected documents are the three-page method, one-page project template and 
 The release snapshot records the four reviewed commits and integration. Package checks concern document/content integrity and the declared assembly route. Django runtime remains NOT RUN; consuming-project conformance remains NOT YET PROVEN. No new normative requirement is introduced by build metadata or the completion report.
 
 **FSL owns the method. The project owns the work.**
+
+## Adopted development amendment — 2026-09-09
+
+[FSL Amendment 001 — Local-first testing; minimal external CI](FSL-AMENDMENT-001-LOCAL-FIRST-TESTING.md) adds clause **FSL-TEST-001** by explicit owner instruction. Its immutable adoption record is SPEC commit `7961b070306b357b0bc4d02506bf03797fe31931`.
+
+Apply the clause to subsequent testing decisions and carry it into the next reviewed method baseline. The amendment owns its exact wording; this index does not duplicate it. The adopted English source, released v1.8 artifacts and historical evidence remain unchanged. Consuming projects adopt the clause explicitly; no project or framework version is automatically upgraded, and no workflow reconfiguration or release is claimed by this documentation change.
