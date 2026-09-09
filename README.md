@@ -1,21 +1,19 @@
-# Four-Square Letterhead — FSL v1.8
+# Foundational FSL v1.10
 
-**Plain-English Method.** A compact project identity, contract and working method for humans and agents.
+Project DNA, Sister Cells and Lineage. **Documents govern. Skills maintain. Evidence verifies.**
 
-Read [the authoritative English method](skills/FSL-v1.8-SKILL.md). [SPEC adoption](spec/FSL-v1.8-ADOPTION.md) identifies its exact source and scope; it does not create a competing constitution. [The completion review](spec/FSL-v1.8-COMPLETION.md) accounts for the 40 agreed content items and records the earlier local completion step. Current integration and publication are identified separately by the release snapshot and assembly record.
+Read [the authoritative method](spec/FSL-v1.10-METHOD.md). SPEC owns adopted intent and authority for continuity and advancement; the [maintenance skill](skills/FSL-v1.10-SKILL.md) works beneath it. [The optional appendix](spec/FSL-v1.10-APPENDIX-DNA-LINEAGE.md) explains the biology analogy without creating obligations.
 
-Start with **SPEC / SYSTEM / AI / MEMORY**. SPEC lists the project's completed FSL first. SYSTEM/AI are recommended defaults; justified alternatives remain valid. FSL's own repository retains TEMPLATES/SKILL. Project work belongs in its project repository.
+Start from [the project DNA template](templates/FSL-v1.10-PROJECT-DNA-TEMPLATE.md) and [the worked Evidence Brief example](templates/FSL-v1.10-EXAMPLE-EVIDENCE-BRIEF.md). Projects retain SPEC / MEMORY and may justify alternatives to the SYSTEM / AI defaults. FSL's own concerns remain SPEC / TEMPLATES / SKILL / MEMORY.
 
-One page is enough when it explains the project. Use two or three when needed, without compulsory page assignments or blank forms. The [one-page template](templates/v1.8/FSL-v1.8-Template-1P.pdf) and [Django illustration](templates/v1.8/FSL-v1.8-Sample-Django-1P.pdf) are editable authoring/example aids, not additional authorities.
+Sister Cells retain identified lineage with separate state and evidence. Permissions, acceptance, another cell's PASS and later changes never transfer automatically. Review parent DNA, affected routes and evidence before authorized promotion. Combined variations are new candidates. Promoting a conforming implementation can preserve DNA; only adopted SPEC revision creates a new DNA generation.
 
-**R-01: input → required touchpoints → observable output.** Route defines expected coverage; run records observed coverage. Iterative work remains; compulsory I- numbering does not. Keep run details in normal evidence records rather than touchpoint tables on the letterhead.
+**R-01: input → required touchpoints → observable output.** Keep touchpoints in plain English and observed results in the run record. Iteration numbering and existing-project histories are optional. New projects retain four E2E learning goals. Appendix explains; errata corrects without changing intent; an adopted amendment changes intent.
 
-New projects SHOULD begin with four E2E learning goals: tiny complete path → useful behavior → boundary/recovery → intended-use rehearsal → grow. Existing projects can adopt a reviewed current baseline without recreating development history. Appendix explains; errata corrects without changing intent; adopted amendments change intent. A proposal is not approval.
+## Release
 
-## Release files
+[Open the v1.10 branch release](https://github.com/runplus-community/four-square-letterhead.ai/tree/release/fsl-v1.10/release/v1.10) for the full ZIP, PDF/Word reading copies, sources, exact snapshot and checksums. Method 3 pages; template 1; skill 1; appendix 2; example 2. This is a branch-scoped publication, not a GitHub Releases-page entry.
 
-The branch-scoped publication location is `release/fsl-v1.8`, directory `release/v1.8/`. It contains the real documents, exact English method, recall, adoption/snapshot notes, completion review, build source and verifier, manifest, checksums and downloadable pack. It is a public branch release, not a GitHub Releases-page entry. The final artifact commit and assembly record establish publication; source integration alone does not.
+[Review and validation scope](memory/FSL-v1.10-REVIEW.md) and [continuity](memory/FSL-v1.10-MEMORY.md) identify what was checked. The complete v1.9 development, collaboration, Actions-budget and route-verification section is unchanged. GitHub Actions remain OFF for this release. Framework publication does not adopt or certify consuming projects and installs no monitor or execution engine.
 
-The release pack differs from the local candidate in publication metadata, generated document packaging and added build/evidence files. The three method sections and template/sample body wording are checked unchanged. Django runtime remains NOT RUN; consuming-project conformance is NOT YET PROVEN.
-
-**FSL owns the method. The project owns the work.**
+FSL owns the method. The project owns the work.
