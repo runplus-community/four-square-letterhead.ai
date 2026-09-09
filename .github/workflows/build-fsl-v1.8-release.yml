@@ -1,0 +1,167 @@
+name: Build FSL v1.8 branch release
+on:
+  push:
+    branches: [release/fsl-v1.8]
+    paths: ['.github/workflows/build-fsl-v1.8-release.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: fsl-v1.8-release
+  cancel-in-progress: false
+jobs:
+  assemble-release:
+    runs-on: ubuntu-24.04
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      INTEGRATION: 4dfe32cfcc7b8176e3fea3f5efa9c96ba008ad27
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Display the complete route before execution
+        run: |
+          echo 'R-01: exact reviewed inputs -> payload assembly -> ZIP -> clean extraction and verification.'
+          echo 'Expected: the complete v1.8 framework document package passes after clean extraction.'
+          echo 'Document generation is upstream provenance. Django runtime and consuming-project conformance are outside this run.'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install the shipped verification dependencies
+        run: python -m pip install -r templates/v1.8/source/requirements.txt
+      - name: Verify exact inputs and preserve earlier baselines
+        id: inputs
+        run: |
+          set -euo pipefail
+          python -B - <<'PY'
+          import subprocess,hashlib,re
+          from pathlib import Path
+          def git(*args): return subprocess.check_output(['git',*args],text=True).strip()
+          pins={'spec':'e3e76b2bac4b228d9e8a41b31c96342376181e97','templates':'6aae7f74e959283c1f8a19588ca0d9a50b4326ca','skills':'b28a616ae7292913c9f7e3c10095e73c74b9019b','memory':'5eb035249d7849166445e4491fd5f91781c1e792'}
+          for path,commit in pins.items():
+              assert git('rev-parse','HEAD:'+path)==git('rev-parse',commit+':'+path),path
+          for line in git('ls-tree','-r','4d44a31afd6ccf30b07abcf916f3d5aeaf130f91').splitlines():
+              entry,path=line.split('\t',1)
+              if re.search(r'v1\.[1-7](?:[/.-]|$)',path):
+                  assert git('rev-parse','HEAD:'+path)==entry.split()[2],path
+          old={'main1':'1f9fa2468fc90d13fe308666488b8eb0b21a42bc','release/fsl-v1.1':'a06b5d21762601e25e387cfe00ee77cb761ad3df','release/fsl-v1.2':'2f70613b7c9d841c83ac26fe0455e1f66de650ca','release/fsl-v1.3':'8eaeece985ba74ea119a070a2ebcfdf8607b4ec7','release/fsl-v1.4':'63a7d75bc831de52d085b2bd3d5db133cffb499e','release/fsl-v1.5':'8bce8af6b176dcda47341046bba6ce839aa4b339','release/fsl-v1.6':'1675ec1dfa907d218417579ad84c4bbbfa68a45d','release/fsl-v1.7':'8783baf7555a0c57f59f67d10e942b62b4a18e23'}
+          remote=dict(line.split('\t')[::-1] for line in git('ls-remote','origin',*[f'refs/heads/{n}' for n in old]).splitlines())
+          for name,sha in old.items(): assert remote['refs/heads/'+name]==sha,name
+          s=Path('skills/FSL-v1.8-SKILL.md').read_bytes()
+          assert hashlib.sha256(s).hexdigest()=='6043e0566626e403ac9509c23a43b9b7957158d2da6c1ed04a9c9a455bd2ffe7'
+          text=s.decode();assert hashlib.sha256(text[text.index('## 1.'):].encode()).hexdigest()=='ae188b63f55e300bd05a47b7aa06aa4c8cd5e63ed06c2822e0770e7eb7634eab'
+          assert hashlib.sha256(Path('spec/FSL-v1.8-COMPLETION.md').read_bytes()).hexdigest()=='51c562cba7f06a4def9f0158d4a2e861e7a9defc6ee48015ac0487e2e5bf561a'
+          print('PASS: reviewed four-directory combination, approved English, original completion report, old versioned files and eight historical references')
+          PY
+          (cd templates/v1.8 && sha256sum -c DOCUMENT-SHA256SUMS.txt)
+      - name: Assemble the declared payload
+        id: payload
+        run: |
+          python -B - <<'PY'
+          import os,shutil
+          from pathlib import Path
+          p=Path(os.environ['RUNNER_TEMP'])/'fsl18-payload'
+          if p.exists(): shutil.rmtree(p)
+          (p/'source').mkdir(parents=True)
+          copies={'skills/FSL-v1.8-SKILL.md':'FSL-v1.8-SKILL.md','memory/FSL-v1.8-MEMORY.md':'FSL-v1.8-MEMORY.md','spec/FSL-v1.8-ADOPTION.md':'FSL-v1.8-ADOPTION.md','spec/FSL-v1.8-COMPLETION.md':'FSL-v1.8-COMPLETION.md','RELEASES/FSL-v1.8.md':'FSL-v1.8-RELEASE-NOTES.md','RELEASES/FSL-v1.8-SNAPSHOT.md':'FSL-v1.8-SNAPSHOT.md','VERSION':'VERSION'}
+          for src,dst in copies.items(): shutil.copy2(src,p/dst)
+          docs=sorted(Path('templates/v1.8').glob('FSL-v1.8-*'))
+          docs=[f for f in docs if f.suffix in ('.pdf','.docx')]
+          assert len(docs)==6
+          for f in docs: shutil.copy2(f,p/f.name)
+          for name in ('build.py','verify.py','layouts.json','layout-nodes-0.json','layout-nodes-1.json','layout-nodes-2.json','requirements.txt','README.md'):
+              shutil.copy2(Path('templates/v1.8/source')/name,p/'source'/name)
+          (p/'README.md').write_text('''# FSL v1.8 — Plain-English Method\n\nRead FSL-v1.8-SKILL.md, the single editable English method. SPEC adopts that exact source in FSL-v1.8-ADOPTION.md. Repository paths in the adoption record map to the same basenames in this flat consumer pack. PDF/DOCX method copies derive from the source; the template and Django example are authoring aids, not competing specifications.\n\nDocuments: three-page method, one-page project template and one-page illustration, each DOCX/PDF. Extend project letterheads to two or three pages only when needed. No blank continuation forms, touchpoint tables or required iteration schema are introduced.\n\nThe original FSL-v1.8-COMPLETION.md is the unchanged 40-item local content review. Its local-status statements describe that earlier step. Current source adoption, reviewed commits and branch publication are identified by the snapshot, release notes and accompanying assembly run record. The release pack has its own checksum and is not byte-identical to the original local candidate; publication metadata and build/evidence files were added, while core method and template/sample body wording were preserved.\n\nTo verify, extract FSL-Pack-v1.8.zip into an empty directory, install source/requirements.txt, and run `python -B source/verify.py . --selftest --hashes`. SHA256SUMS.txt covers every other file inside this ZIP, including the manifest and build source. The sibling ZIP checksum covers the archive. The accompanying run record is outside the ZIP so it can identify that exact archive without a self-referential hash.\n\nThe optional source directory rebuilds the documents from the approved native Word layout and authoritative English. Its layout JSON is internal build data, not a form FSL users fill. No font files are distributed.\n\nPublication location: runplus-community/four-square-letterhead.ai, branch release/fsl-v1.8, directory release/v1.8. This is a public branch-scoped release, not a GitHub Releases-page entry. The final artifact commit establishes publication. Django runtime: NOT RUN. Consuming-project conformance: NOT YET PROVEN.\n\n**FSL owns the method. The project owns the work.**\n''')
+          print('PASS: six documents, English method, recall, adoption, completion, release notes, snapshot and build source assembled')
+          PY
+      - name: Hash and archive the exact payload
+        id: archive
+        run: |
+          python -B - <<'PY'
+          import os,hashlib,zipfile,shutil
+          from pathlib import Path
+          p=Path(os.environ['RUNNER_TEMP'])/'fsl18-payload'
+          files=sorted(f.relative_to(p).as_posix() for f in p.rglob('*') if f.is_file())
+          (p/'MANIFEST.txt').write_text('\n'.join(files)+'\n')
+          files=sorted(files+['MANIFEST.txt'])
+          (p/'SHA256SUMS.txt').write_text(''.join(hashlib.sha256((p/f).read_bytes()).hexdigest()+'  '+f+'\n' for f in files))
+          out=Path('release/v1.8')
+          if out.exists(): raise RuntimeError('Refusing to overwrite an existing published v1.8 payload')
+          shutil.copytree(p,out)
+          target=out/'FSL-Pack-v1.8.zip'
+          with zipfile.ZipFile(target,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9) as z:
+              for name in sorted(files+['SHA256SUMS.txt']):
+                  info=zipfile.ZipInfo(name,(2026,9,9,0,0,0));info.compress_type=zipfile.ZIP_DEFLATED;info.external_attr=0o100644<<16
+                  z.writestr(info,(p/name).read_bytes())
+          (out/'FSL-Pack-v1.8.zip.sha256').write_text(hashlib.sha256(target.read_bytes()).hexdigest()+'  '+target.name+'\n')
+          print('PASS: exact payload archive and independent ZIP checksum')
+          PY
+      - name: Clean extraction, document checks and tamper rejection
+        id: verify
+        run: |
+          python -B - <<'PY'
+          import os,zipfile,subprocess,sys,hashlib
+          from pathlib import Path
+          out=Path('release/v1.8');target=out/'FSL-Pack-v1.8.zip'
+          assert hashlib.sha256(target.read_bytes()).hexdigest()==(out/'FSL-Pack-v1.8.zip.sha256').read_text().split()[0]
+          p=Path(os.environ['RUNNER_TEMP'])/'fsl18-consumer';p.mkdir()
+          with zipfile.ZipFile(target) as z:
+              assert z.testzip() is None
+              names=z.namelist();assert len(names)==len(set(names))
+              for n in names: assert not Path(n).is_absolute() and '..' not in Path(n).parts
+              z.extractall(p)
+          subprocess.run([sys.executable,'-B',str(p/'source/verify.py'),str(p),'--selftest','--hashes'],check=True)
+          sys.path.insert(0,str(p/'source'))
+          from verify import check_hashes
+          f=p/'VERSION';original=f.read_bytes();f.write_bytes(b'tampered\n')
+          try: check_hashes(p)
+          except ValueError: print('PASS: deliberately modified payload rejected')
+          else: raise RuntimeError('Tamper check failed')
+          f.write_bytes(original);check_hashes(p)
+          print('PASS: clean consumer extraction and all declared checks')
+          PY
+      - name: Record every route point without assuming future publication
+        if: always()
+        env:
+          INPUTS_RESULT: ${{ steps.inputs.outcome }}
+          PAYLOAD_RESULT: ${{ steps.payload.outcome }}
+          ARCHIVE_RESULT: ${{ steps.archive.outcome }}
+          VERIFY_RESULT: ${{ steps.verify.outcome }}
+        run: |
+          python -B - <<'PY'
+          import os,platform
+          from pathlib import Path
+          out=Path('release/v1.8');out.mkdir(parents=True,exist_ok=True)
+          points=[('Exact reviewed inputs','INPUTS_RESULT'),('Payload assembly','PAYLOAD_RESULT'),('ZIP assembly','ARCHIVE_RESULT'),('Clean extraction, verification and tamper rejection','VERIFY_RESULT')]
+          results=[(name,{'success':'PASS','failure':'FAIL'}.get(os.environ.get(key),'NOT RUN')) for name,key in points]
+          url=f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
+          text=f"# FSL v1.8 — R-01 assembly run\n\nRun: {os.environ['GITHUB_RUN_ID']} / attempt {os.environ['GITHUB_RUN_ATTEMPT']}. Evidence: {url}\n\nIntegration: `{os.environ['INTEGRATION']}`. Workflow: `{os.environ['GITHUB_SHA']}`. Environment: {platform.platform()} / Python {platform.python_version()}.\n\nR-01: exact reviewed inputs → payload assembly → ZIP → clean extraction and verification. Expected: complete framework document payload passes after clean extraction.\n\n"
+          text+='\n\n'.join(f'{name}: **{state}**. Evidence: corresponding named step in this run.' for name,state in results)
+          overall='PASS' if all(state=='PASS' for _,state in results) else 'NOT FULLY PROVEN'
+          text+=f'\n\nObserved route result: **{overall}** within framework artifact scope. Unreached points remain NOT RUN.\n'
+          checksum=out/'FSL-Pack-v1.8.zip.sha256'
+          if checksum.exists():text+='\nArchive: `'+checksum.read_text().strip()+'`.\n'
+          text+='\nDocument generation is upstream provenance from template run 34302422003, source commit 98d9208079ea17600a1a262e6adc2f5d26177408, output commit 6aae7f74e959283c1f8a19588ca0d9a50b4326ca. This run verifies those exact output bytes; it does not claim to regenerate them. The five reviewed PDF pages and independently rendered DOCX pages were inspected before integration.\n\nDjango runtime: NOT RUN. Consuming-project conformance: NOT YET PROVEN. Publication is the following push step and final artifact commit, not a future action pre-claimed by this report.\n'
+          (out/'FSL-v1.8-RUN.md').write_text(text)
+          print(text)
+          PY
+      - name: Publish verified branch artifacts without rewriting history
+        if: success()
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/release/fsl-v1.8 | cut -f1)" = "$GITHUB_SHA"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add release/v1.8
+          git commit -m 'release: verified FSL v1.8 English method and lean artifact package [skip ci]'
+          git push origin HEAD:release/fsl-v1.8
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: fsl-v1.8-release
+          path: |
+            release/v1.8/FSL-Pack-v1.8.zip
+            release/v1.8/FSL-Pack-v1.8.zip.sha256
+            release/v1.8/FSL-v1.8-RUN.md
+          if-no-files-found: error
