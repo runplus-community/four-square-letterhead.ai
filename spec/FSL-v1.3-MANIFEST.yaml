@@ -1,0 +1,56 @@
+fsl:
+  name: Four-Square Letterhead
+  alias: FSL
+  version: "1.3"
+  template_label: "Four-Square Template v1.3"
+  max_pages: 3
+  fixed_lanes: [spec, memory]
+  project_lanes:
+    count: 2
+    examples: [code, tools, docs, utils, plugins, skills, ai, app, data, model]
+  normative:
+    binding: [MUST, MUST_NOT, SHALL, SHALL_NOT]
+    expected: [SHOULD, SHOULD_NOT]
+    permitted: [MAY]
+    deviation: [EXCEPTION, WAIVER]
+    rendered_emphasis: [uppercase, bold, underline]
+  constitutional_forms: [ARTICLE, LAW, CONTRACT, POLICY, GUARDRAIL, RECOMMENDED_PRACTICE, CHECKLIST]
+  clause_ids:
+    required_for: material_binding_clauses
+    grammar: "FORM-SCOPE-NNN"
+    examples: [LAW-SPEC-001, GUARD-WORKSTUDIO-003, CONTRACT-AI-002]
+  proof_tuple: [CLAIM, SCOPE, ENVIRONMENT, EVIDENCE, RESULT]
+  conformance_states: [CONFORMANT, CONFORMANT_WITH_EXCEPTION, NON_CONFORMANT, NOT_YET_PROVEN]
+  version_identity:
+    fsl_template: governance_language
+    project_version: governed_system
+    conflation_allowed: false
+  release_snapshot:
+    required_for: accepted_four_square_release
+    fields: [fsl, project, project_version, branches]
+    authority: git
+  relation_semantics: [REUSE, INHERIT, REFERENCE]
+  development:
+    model: ordered_end_to_end_iterations
+    axiom: "ITERATE -> TOUCH -> PROVE -> LEARN -> INCREMENT"
+    spine: csv
+    csv_columns: [Seq, Iteration, Requirement, Touchpoints, E2E_Path, Proof, Status]
+    statuses: [PLANNED, ACTIVE, PROVEN, BLOCKED]
+    touchpoint_states: [CHANGE, VERIFY, NOT_AFFECTED]
+    end_to_end_from_first_iteration: true
+    implemented_alone_is_complete: false
+    baseline: latest_proven_iteration
+    touchpoints_are_branches: false
+    inspect_all_four_branches_before_acceptance: true
+  memory_axiom: "MEMORY may remember law; MEMORY cannot make law."
+  ai:
+    invent_missing_law: false
+    silently_resolve_normative_ambiguity: false
+  recall_default: "v1.3 file-backed pack"
+  supporting_artifacts:
+    development_strategy: "FSL-v1.3-DEVELOPMENT-STRATEGY.md"
+    iteration_csv: "FSL-v1.3-ITERATIONS.csv"
+  sample:
+    name: Django
+    version_label: "Django Sample v1.3"
+    illustrative_only: true

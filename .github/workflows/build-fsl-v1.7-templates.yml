@@ -1,0 +1,86 @@
+name: Build and verify FSL v1.7 templates
+on:
+  push:
+    branches: [templates-v1.7]
+    paths: ['templates/v1.7/*.py', 'templates/v1.7/requirements.txt', '.github/workflows/build-fsl-v1.7-templates.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: fsl-v1.7-templates
+  cancel-in-progress: false
+jobs:
+  build-templates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Show route and install tools
+        run: |
+          echo 'R-01-TEMPLATE: source -> DOCX -> rendered PDF -> document checks -> retained artifacts'
+          echo 'Before run: source=NOT RUN; DOCX=NOT RUN; PDF=NOT RUN; checks=NOT RUN; artifacts=NOT RUN'
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libreoffice-writer poppler-utils fonts-liberation
+          python -m pip install --disable-pip-version-check -r templates/v1.7/requirements.txt
+      - name: Generate DOCX and render PDF
+        run: |
+          set -euo pipefail
+          git diff --exit-code c85fb3dd22fdb4be21e039c3b22638b685d899b3 -- templates/v1.6
+          python templates/v1.7/build_templates.py --output templates/v1.7
+          mkdir -p /tmp/fsl17-pdf
+          for f in templates/v1.7/FSL-v1.7-*.docx; do
+            libreoffice -env:UserInstallation=file:///tmp/fsl17-lo --headless --convert-to pdf --outdir /tmp/fsl17-pdf "$f"
+          done
+          cp /tmp/fsl17-pdf/*.pdf templates/v1.7/
+          python templates/v1.7/verify_package.py --documents templates/v1.7
+      - name: Verify that broken documents are rejected
+        run: |
+          python - <<'PY'
+          import importlib.util,sys,tempfile,zipfile
+          from pathlib import Path
+          sys.dont_write_bytecode=True
+          root=Path('templates/v1.7')
+          spec=importlib.util.spec_from_file_location('verify',root/'verify_package.py')
+          v=importlib.util.module_from_spec(spec);spec.loader.exec_module(v)
+          original=root/'FSL-v1.7-Template-1P.docx'
+          mutations=[(b'R-01',b'Q-99'),(b'FSL / Scope',b'Scope / FSL'),(b'system-vN',b'other-vN'),(b'<w:u w:val="single"/>',b'')]
+          for old,new in mutations:
+              with tempfile.TemporaryDirectory() as td:
+                  p=Path(td)/'broken.docx'
+                  with zipfile.ZipFile(original) as src,zipfile.ZipFile(p,'w') as dst:
+                      for name in src.namelist():
+                          data=src.read(name)
+                          if name=='word/document.xml':
+                              assert old in data,old
+                              data=data.replace(old,new)
+                          dst.writestr(name,data)
+                  try: v.check_docx(p,False)
+                  except ValueError: print('PASS rejected mutation',old.decode())
+                  else: raise AssertionError('Broken document accepted')
+          PY
+      - name: Checksums and verified output commit
+        run: |
+          set -euo pipefail
+          (cd templates/v1.7; sha256sum FSL-v1.7-*.docx FSL-v1.7-*.pdf > SHA256SUMS.txt; sha256sum -c SHA256SUMS.txt)
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add templates/v1.7/FSL-v1.7-*.docx templates/v1.7/FSL-v1.7-*.pdf templates/v1.7/SHA256SUMS.txt
+          if ! git diff --cached --quiet; then
+            git commit -m 'templates: verified v1.7 documents and checksums [skip ci]'
+            git push origin HEAD:templates-v1.7
+          fi
+          echo 'R-01-TEMPLATE result: source=PASS; DOCX=PASS; PDF=PASS; checks=PASS; artifacts=PASS'
+          echo 'Scope: FSL framework documents only; Django runtime NOT RUN'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fsl-v1.7-templates
+          path: |
+            templates/v1.7/FSL-v1.7-*.docx
+            templates/v1.7/FSL-v1.7-*.pdf
+            templates/v1.7/SHA256SUMS.txt
+          if-no-files-found: error
