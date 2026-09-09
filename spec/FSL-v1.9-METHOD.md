@@ -2,7 +2,7 @@
 
 Project: four-square-letterhead.ai. Method edition: v1.9. Four-Square Template v1.9. Published branch-scoped release.
 
-This Markdown file owns this proposed method's wording; PDF/DOCX are derived views. Adopting projects retain their approved document authority. The maintenance skill applies the method; it does not replace project intent.
+This Markdown file owns this method's wording; PDF/DOCX are derived views. Adopting projects retain their approved document authority. The maintenance skill applies the method; it does not replace project intent.
 
 ## 1. Documents govern; stewardship maintains continuity
 
